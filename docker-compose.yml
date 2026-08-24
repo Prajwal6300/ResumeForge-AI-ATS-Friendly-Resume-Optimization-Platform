@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=sqlite+aiosqlite:///./data/resumeforge.db
+      - JWT_SECRET=resumeforge-super-secure-production-key-2026-ats-optimization
+      - AI_PROVIDER=openai
+      - STORAGE_PROVIDER=local
+      - STORAGE_LOCAL_PATH=./uploads
+    volumes:
+      - api_data:/app/data
+      - api_uploads:/app/uploads
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  api_data:
+  api_uploads:
