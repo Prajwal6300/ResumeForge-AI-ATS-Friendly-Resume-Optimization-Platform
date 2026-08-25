@@ -63,6 +63,11 @@ temp/
 *.docx
 !examples/*.pdf
 !examples/*.docx
+
+
+
+
+
 *.db
 *.sqlite
 *.sqlite3
