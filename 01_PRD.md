@@ -1,7 +1,7 @@
 # 01_PRD.md — Product Requirements Document
 
 ## ResumeForge AI
-
+                                                         
 **Version:** 1.0.0
 **Date:** 2026-08-24
 **Purpose:** Defines the product vision, scope, features, and success metrics for the ResumeForge AI platform.
