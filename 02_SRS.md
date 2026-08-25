@@ -5,7 +5,7 @@
 **Version:** 1.0.0
 **Date:** 2026-08-24
 **Purpose:** Defines clear, testable, and unambiguous functional and non-functional requirements for the ResumeForge AI platform.
-
+                                                     
 ---
 
 ## 1. System Overview
