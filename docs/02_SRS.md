@@ -8,7 +8,7 @@
 
 ---
 
-## 1. System Overview
+## 1. System Overview                                             
 
 ResumeForge AI is a web application that helps job seekers create ATS-friendly resumes tailored to specific job descriptions. The system accepts resume and job description documents, extracts structured information using NLP and parsing, provides compatibility analysis, and generates optimized resume content.
 
