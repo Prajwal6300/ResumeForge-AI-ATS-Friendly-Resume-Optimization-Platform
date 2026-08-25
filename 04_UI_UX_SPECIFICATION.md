@@ -19,7 +19,7 @@ ResumeForge AI is designed as a **clean, high-density, professional SaaS product
 - **Purposeful Color Palette:** Monochromatic base with purposeful semantic accents (Deep Slate for primary actions, Royal Blue for links/active states, Emerald Green for matched keywords/high scores, Amber for warnings/partial matches, and Rose for critical missing skills/errors).
 - **Zero Uncanny AI Visuals:** AI suggestions appear as clean diff cards with clear provenance and reasoning, never disguised as magic.
 
----
+---                                           
 
 ## 2. Design System & Design Tokens
 
