@@ -102,7 +102,7 @@ Interactive Swagger API documentation will be available at:
 👉 **http://localhost:8000/docs**
 
 ### 2. Frontend Setup (`apps/web`)
-```bash
+```bash                                               
 # Navigate to web application directory
 cd apps/web
 
