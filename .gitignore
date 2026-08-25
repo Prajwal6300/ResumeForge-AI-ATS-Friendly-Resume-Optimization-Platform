@@ -38,6 +38,7 @@ out/
 .pnpm-store/
 yarn.lock
 package-lock.json
+*.tsbuildinfo
 
 # Environment variables & secrets
 .env
