@@ -8,7 +8,7 @@
 **Author:** Product Design & UI/UX Engineering Team  
 
 ---
-
+                                      
 ## 1. Design Direction & Aesthetic
 
 ResumeForge AI is designed as a **clean, high-density, professional SaaS productivity application**. It rejects flashy AI marketing gimmicks, distracting animated gradient meshes, and decorative bloat in favor of typographic rigor, optimal information hierarchy, and calm, distraction-free editing environments.
