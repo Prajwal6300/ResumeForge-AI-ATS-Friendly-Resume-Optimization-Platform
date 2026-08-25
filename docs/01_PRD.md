@@ -7,7 +7,7 @@
 **Purpose:** Defines the product vision, scope, features, and success metrics for the ResumeForge AI platform.
 
 ---
-
+                                                
 ## 1. Executive Summary
 
 **What is ResumeForge AI?**
