@@ -3,7 +3,7 @@
 > **AI-Powered ATS Resume Optimization & Job Matching Platform**  
 > Built with deterministic 5-pillar mathematical scoring, semantic keyword gap analysis, selectable-text PDF/DOCX exporters, and strict Anti-Fabrication guardrails.
 
-[![Tests](https://img.shields.io/badge/pytest-19%20passed%20(100%25)-success)](file:///apps/api/tests)
+[![Tests](https://img.shields.io/badge/pytest-25%20passed%20(100%25)-success)](file:///apps/api/tests)
 [![Next.js](https://img.shields.io/badge/frontend-Next.js%2014-black)](file:///apps/web)
 [![FastAPI](https://img.shields.io/badge/backend-FastAPI%20Python%203.13-009688)](file:///apps/api)
 [![ATS Accuracy](https://img.shields.io/badge/ATS%20Score-Deterministic%20Weights-blue)](file:///apps/api/app/ats)
@@ -124,13 +124,14 @@ Run the full unit and integration test suite with `pytest`:
 python -m pytest -v
 ```
 
-All 19 tests cover:
+All 25 tests cover:
 - User registration, JWT issuance, and authentication security.
+- Comprehensive cross-user IDOR access control across all entities.
+- AI safety, anti-fabrication bounds, and adversarial prompt injection defense.
 - Heuristic PDF and DOCX text & section parsers.
-- Synonym dictionary keyword matching and case-insensitive recognition.
-- Deterministic 5-pillar mathematical ATS scoring calculation.
+- Synonym dictionary keyword matching, deduplication, and case-insensitive recognition.
+- Deterministic 5-pillar mathematical ATS scoring calculation with edge case validation.
 - ReportLab selectable-text PDF and python-docx generation.
-- Prompt injection protection and anti-fabrication boundary wrappers.
 - End-to-end full user journey integration workflow.
 
 ---

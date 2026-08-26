@@ -89,15 +89,15 @@ print("   Matched keywords: {}".format(match_result["matched_keywords"]))
 print("   Missing keywords: {}".format(match_result2["missing_keywords"] if 'match_result2' in dir() else []))
 
 # Verify Python is matched
-python_matched = "Python" in [k.lower() for k in match_result["matched_keywords"]]
+python_matched = "python" in [k.lower() for k in match_result["matched_keywords"]]
 print("   [OK] Python correctly matched: {}".format(python_matched))
 
 # Verify PostgreSQL is matched
-pg_matched = "PostgreSQL" in [k.lower() for k in match_result["matched_keywords"]]
+pg_matched = any("postgres" in k.lower() for k in match_result["matched_keywords"])
 print("   [OK] PostgreSQL correctly matched: {}".format(pg_matched))
 
 # Verify React is matched
-react_matched = "React" in [k.lower() for k in match_result["matched_keywords"]]
+react_matched = "react" in [k.lower() for k in match_result["matched_keywords"]]
 print("   [OK] React correctly matched: {}".format(react_matched))
 
 # Test 8: Missing skills
@@ -112,8 +112,8 @@ print("   JD requires: Python, React, Docker, AWS, Kubernetes")
 print("   Matched: {}".format(match_result2["matched_keywords"]))
 print("   Missing: {}".format(match_result2["missing_keywords"]))
 
-docker_missing = "Docker" in [k.lower() for k in match_result2["missing_keywords"]]
-aws_missing = "AWS" in [k.lower() for k in match_result2["missing_keywords"]]
+docker_missing = "docker" in [k.lower() for k in match_result2["missing_keywords"]]
+aws_missing = "aws" in [k.lower() for k in match_result2["missing_keywords"]]
 print("   [OK] Docker detected as missing: {}".format(docker_missing))
 print("   [OK] AWS detected as missing: {}".format(aws_missing))
 

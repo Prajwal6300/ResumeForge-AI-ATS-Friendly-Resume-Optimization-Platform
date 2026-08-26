@@ -1,6 +1,7 @@
 import asyncio
 import os
 import io
+import uuid
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from httpx import AsyncClient, ASGITransport
@@ -28,8 +29,9 @@ async def test():
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         # 1. Register
         print("\n1. USER REGISTRATION")
+        unique_email = f"audit_{uuid.uuid4().hex[:8]}@example.com"
         r = await client.post("/api/v1/auth/register", json={
-            "email": "audit+user-new@example.com", 
+            "email": unique_email, 
             "password": "Password123!", 
             "full_name": "John Miller"
         })
@@ -44,7 +46,7 @@ async def test():
         # 2. Login
         print("\n2. LOGIN")
         r = await client.post("/api/v1/auth/login", json={
-            "email": "audit+user-new@example.com", 
+            "email": unique_email, 
             "password": "Password123!"
         })
         if r.status_code != 200:
@@ -62,7 +64,26 @@ async def test():
         
         # 4. Upload PDF resume
         print("\n4. UPLOAD PDF RESUME")
-        sample_resume_text = open("test_resume.txt", "r").read()
+        sample_resume_text = """John Doe
+john@example.com | (555) 123-4567 | San Francisco, CA
+
+Professional Summary
+Senior Full-Stack Engineer with 6+ years building distributed applications using Python, FastAPI, React, and PostgreSQL.
+
+Technical Skills
+Languages: Python, JavaScript, TypeScript, SQL
+Frameworks: FastAPI, React, Next.js, Node.js
+Tools & Cloud: Docker, Kubernetes, AWS, PostgreSQL, Git
+
+Work Experience
+Senior Software Engineer | TechCorp Inc.
+Jan 2022 - Present
+- Architected microservices with FastAPI and PostgreSQL, improving API response times by 40%.
+- Led frontend migration to React and TypeScript.
+
+Education
+BS in Computer Science | University of California (2015 - 2019)
+"""
         struct = parse_resume_sections(sample_resume_text)
         
         # Create in-memory PDF using reportlab
@@ -96,7 +117,14 @@ async def test():
         
         # 5. Create JD
         print("\n5. CREATE JOB DESCRIPTION")
-        sample_jd_text = open("test_jd.txt", "r").read()
+        sample_jd_text = """Senior Full-Stack Engineer
+Company: TechCorp Industries
+
+Requirements:
+- 5+ years experience in Python, FastAPI, and React
+- Experience with Docker, Kubernetes, and PostgreSQL
+- Knowledge of AWS and CI/CD pipelines
+"""
         jd_struct = parse_job_description_text(sample_jd_text, title="Senior Full-Stack Engineer")
         
         r = await client.post(

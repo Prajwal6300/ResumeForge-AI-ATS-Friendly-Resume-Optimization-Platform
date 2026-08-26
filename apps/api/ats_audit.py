@@ -147,7 +147,7 @@ print("   Overall score: {:.1f}%".format(result_no_aws["overall_score"]))
 print("   Missing keywords: {}".format(result_no_aws["missing_keywords"]))
 
 # AWS should be in missing keywords since it's not in the resume
-aws_in_missing = "AWS" in [k.lower() for k in result_no_aws["missing_keywords"]]
+aws_in_missing = "aws" in [k.lower() for k in result_no_aws["missing_keywords"]]
 print("   AWS correctly in missing: {}".format("PASS" if aws_in_missing else "FAIL"))
 
 # ============================================================

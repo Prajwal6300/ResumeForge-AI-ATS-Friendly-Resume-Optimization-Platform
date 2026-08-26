@@ -26,5 +26,5 @@ import re
 
 def wrap_untrusted_content(tag_name: str, content: str) -> str:
     """Safely isolate untrusted document or user content inside XML tags."""
-    sanitized = re.sub(r"</[a-zA-Z0-9_-]+>", "", content)
+    sanitized = re.sub(r"</\s*[a-zA-Z0-9_-]+[^>]*>", "", content, flags=re.IGNORECASE)
     return f"<{tag_name}>\n{sanitized}\n</{tag_name}>"

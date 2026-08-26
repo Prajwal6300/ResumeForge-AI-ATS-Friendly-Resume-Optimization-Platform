@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start -p 3000",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "next lint && tsc --noEmit"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
