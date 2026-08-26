@@ -24,7 +24,7 @@ export function AISuggestionsPanel({ suggestions, onUpdateStatus, onApplyText }:
             <Sparkles className="h-5 w-5" />
           </div>
           <p className="font-semibold text-sm text-foreground">No Pending AI Suggestions</p>
-          <p>Click "AI Improve" on any section or "AI Rewrite" on bullet points to get suggestions.</p>
+          <p>Click &quot;AI Improve&quot; on any section or &quot;AI Rewrite&quot; on bullet points to get suggestions.</p>
         </CardContent>
       </Card>
     );
