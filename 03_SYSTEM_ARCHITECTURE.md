@@ -7,7 +7,7 @@
 **Status:** Approved  
 **Author:** Software Architecture & Engineering Team  
 
----
+---                                                          
 
 ## 1. Architecture Overview
 
