@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { KeyRound, Code2, ListChecks, Briefcase, FileCheck, Check, AlertTriangle } from "lucide-react";
+import { KeyRound, Code2, ListChecks, Briefcase, FileCheck, Check, AlertTriangle, Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +20,7 @@ export function ScoreBreakdownCard({ breakdown }: ScoreBreakdownCardProps) {
       weight: 40,
       data: breakdown.keyword_relevance,
       icon: KeyRound,
-      color: "text-blue-600",
+      iconBg: "bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 border-indigo-200/80 dark:border-indigo-800",
     },
     {
       id: "technical_skills",
@@ -28,7 +28,7 @@ export function ScoreBreakdownCard({ breakdown }: ScoreBreakdownCardProps) {
       weight: 25,
       data: breakdown.technical_skills,
       icon: Code2,
-      color: "text-indigo-600",
+      iconBg: "bg-violet-50 dark:bg-violet-950 text-violet-600 dark:text-violet-400 border-violet-200/80 dark:border-violet-800",
     },
     {
       id: "responsibilities",
@@ -36,7 +36,7 @@ export function ScoreBreakdownCard({ breakdown }: ScoreBreakdownCardProps) {
       weight: 20,
       data: breakdown.responsibilities,
       icon: ListChecks,
-      color: "text-teal-600",
+      iconBg: "bg-teal-50 dark:bg-teal-950 text-teal-600 dark:text-teal-400 border-teal-200/80 dark:border-teal-800",
     },
     {
       id: "experience_relevance",
@@ -44,7 +44,7 @@ export function ScoreBreakdownCard({ breakdown }: ScoreBreakdownCardProps) {
       weight: 10,
       data: breakdown.experience_relevance,
       icon: Briefcase,
-      color: "text-purple-600",
+      iconBg: "bg-purple-50 dark:bg-purple-950 text-purple-600 dark:text-purple-400 border-purple-200/80 dark:border-purple-800",
     },
     {
       id: "resume_structure",
@@ -52,40 +52,49 @@ export function ScoreBreakdownCard({ breakdown }: ScoreBreakdownCardProps) {
       weight: 5,
       data: breakdown.resume_structure,
       icon: FileCheck,
-      color: "text-amber-600",
+      iconBg: "bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 border-amber-200/80 dark:border-amber-800",
     },
   ];
 
   return (
-    <Card className="w-full">
-      <CardHeader className="p-6 pb-4">
-        <CardTitle className="text-lg font-semibold flex items-center justify-between">
-          <span>5-Pillar Score Breakdown</span>
-          <Badge variant="outline" className="text-xs font-normal">
+    <Card className="w-full border border-border/80 shadow-dropdown bg-card">
+      <CardHeader className="p-6 sm:p-8 pb-4 border-b border-border/60">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <CardTitle className="text-lg sm:text-xl font-bold flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-primary" />
+            <span>5-Pillar Score Breakdown</span>
+          </CardTitle>
+          <Badge variant="outline" className="self-start sm:self-auto text-[11px] font-bold uppercase tracking-wider">
             Deterministic Weights (100% Total)
           </Badge>
-        </CardTitle>
+        </div>
       </CardHeader>
 
-      <CardContent className="p-6 pt-0 space-y-6">
+      <CardContent className="p-6 sm:p-8 space-y-6">
         {pillars.map((pillar) => {
           const Icon = pillar.icon;
           const score = pillar.data?.score || 0;
           const weighted = pillar.data?.weighted_score || 0;
 
           return (
-            <div key={pillar.id} className="space-y-2 border-b last:border-0 pb-4 last:pb-0">
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-2 font-medium text-foreground">
-                  <Icon className={`h-4 w-4 ${pillar.color}`} />
-                  <span>{pillar.label}</span>
-                  <span className="text-xs text-muted-foreground font-normal">
-                    (Weight: {pillar.weight}%)
-                  </span>
+            <div key={pillar.id} className="space-y-3 border-b border-border/60 last:border-0 pb-6 last:pb-0">
+              <div className="flex items-center justify-between text-xs sm:text-sm">
+                <div className="flex items-center gap-2.5 font-bold text-foreground">
+                  <div className={`h-8 w-8 rounded-xl border flex items-center justify-center shadow-subtle shrink-0 ${pillar.iconBg}`}>
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <span>{pillar.label}</span>
+                    <span className="text-[11px] text-muted-foreground font-normal ml-2">
+                      ({pillar.weight}% weight)
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-baseline gap-1.5">
-                  <span className={`font-bold ${getScoreColor(score)}`}>{score.toFixed(0)}%</span>
-                  <span className="text-xs text-muted-foreground font-normal">
+                <div className="flex items-baseline gap-2">
+                  <span className={`font-mono font-black text-sm sm:text-base ${getScoreColor(score)}`}>
+                    {score.toFixed(0)}%
+                  </span>
+                  <span className="text-[11px] text-muted-foreground font-semibold">
                     (+{weighted.toFixed(1)} pts)
                   </span>
                 </div>
@@ -94,25 +103,25 @@ export function ScoreBreakdownCard({ breakdown }: ScoreBreakdownCardProps) {
               <Progress
                 value={score}
                 indicatorClassName={getScoreProgressColor(score)}
-                className="h-2"
+                className="h-2.5 bg-muted/60"
               />
 
               {pillar.data?.feedback && (
-                <p className="text-xs text-muted-foreground">{pillar.data.feedback}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed pt-0.5">{pillar.data.feedback}</p>
               )}
 
               {/* Strengths & Improvements */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 pt-1 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs">
                 {pillar.data?.strengths?.length > 0 && (
-                  <div className="flex items-start gap-1.5 text-emerald-700 dark:text-emerald-400">
-                    <Check className="h-3.5 w-3.5 shrink-0 mt-0.5" />
-                    <span>{pillar.data.strengths[0]}</span>
+                  <div className="p-2.5 rounded-lg bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-800/50 flex items-start gap-2 text-emerald-900 dark:text-emerald-300">
+                    <Check className="h-3.5 w-3.5 shrink-0 mt-0.5 text-emerald-600" />
+                    <span className="leading-tight">{pillar.data.strengths[0]}</span>
                   </div>
                 )}
                 {pillar.data?.improvements?.length > 0 && (
-                  <div className="flex items-start gap-1.5 text-amber-700 dark:text-amber-400">
-                    <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
-                    <span>{pillar.data.improvements[0]}</span>
+                  <div className="p-2.5 rounded-lg bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/50 flex items-start gap-2 text-amber-900 dark:text-amber-300">
+                    <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-0.5 text-amber-600" />
+                    <span className="leading-tight">{pillar.data.improvements[0]}</span>
                   </div>
                 )}
               </div>

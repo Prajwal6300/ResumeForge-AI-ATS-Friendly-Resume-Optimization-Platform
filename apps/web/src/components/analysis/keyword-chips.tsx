@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { CheckCircle2, XCircle, AlertCircle, Search } from "lucide-react";
+import { CheckCircle2, XCircle, AlertCircle, Search, ShieldCheck, Tag } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -26,89 +26,97 @@ export function KeywordChips({ matchedKeywords, missingKeywords, weakKeywords }:
   const filteredWeak = filterList(weakKeywords);
 
   return (
-    <Card className="w-full">
-      <CardHeader className="p-6 pb-4">
+    <Card className="w-full border border-border/80 shadow-dropdown bg-card">
+      <CardHeader className="p-6 sm:p-8 pb-4 border-b border-border/60">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <CardTitle className="text-lg font-semibold">ATS Keyword Match Analysis</CardTitle>
-          <div className="relative w-full sm:w-60">
-            <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
+          <div>
+            <CardTitle className="text-lg sm:text-xl font-bold flex items-center gap-2">
+              <Tag className="h-5 w-5 text-primary" />
+              <span>ATS Keyword Match Matrix</span>
+            </CardTitle>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Exact and synonym matches extracted from job posting vs your resume.
+            </p>
+          </div>
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
             <Input
-              placeholder="Filter keywords..."
+              placeholder="Search keyword matrix..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="h-8 pl-8 text-xs"
+              className="h-9 pl-9 text-xs"
             />
           </div>
         </div>
       </CardHeader>
 
-      <CardContent className="p-6 pt-0">
-        <Tabs defaultValue="missing">
-          <TabsList className="grid grid-cols-3 w-full mb-4">
-            <TabsTrigger value="missing" className="text-xs gap-1.5">
-              <XCircle className="h-3.5 w-3.5 text-rose-500" />
+      <CardContent className="p-6 sm:p-8 pt-6">
+        <Tabs defaultValue="missing" className="w-full">
+          <TabsList className="grid grid-cols-3 w-full mb-6">
+            <TabsTrigger value="missing" className="text-xs font-bold gap-1.5 py-2">
+              <XCircle className="h-3.5 w-3.5 text-rose-600 dark:text-rose-400" />
               <span>Missing ({missingKeywords.length})</span>
             </TabsTrigger>
-            <TabsTrigger value="matched" className="text-xs gap-1.5">
-              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+            <TabsTrigger value="matched" className="text-xs font-bold gap-1.5 py-2">
+              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
               <span>Matched ({matchedKeywords.length})</span>
             </TabsTrigger>
-            <TabsTrigger value="weak" className="text-xs gap-1.5">
-              <AlertCircle className="h-3.5 w-3.5 text-amber-500" />
-              <span>Weak ({weakKeywords.length})</span>
+            <TabsTrigger value="weak" className="text-xs font-bold gap-1.5 py-2">
+              <AlertCircle className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+              <span>Weak Context ({weakKeywords.length})</span>
             </TabsTrigger>
           </TabsList>
 
           {/* Missing Keywords Tab */}
-          <TabsContent value="missing" className="space-y-3">
-            <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 text-xs text-rose-800 dark:text-rose-300 flex items-start gap-2">
-              <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
-              <span>
-                <strong>Important Notice:</strong> Add missing keywords only if you genuinely have authentic experience with them. Do not fabricate qualifications.
+          <TabsContent value="missing" className="space-y-4">
+            <div className="p-3.5 rounded-xl bg-rose-50/70 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/50 text-xs text-rose-900 dark:text-rose-200 flex items-start gap-2.5 shadow-subtle">
+              <ShieldCheck className="h-4 w-4 shrink-0 mt-0.5 text-rose-600 dark:text-rose-400" />
+              <span className="leading-relaxed">
+                <strong>Anti-Fabrication Guardrail:</strong> Add missing keywords only if supported by your authentic qualifications and hands-on experience.
               </span>
             </div>
             <div className="flex flex-wrap gap-2 pt-1">
               {filteredMissing.length > 0 ? (
                 filteredMissing.map((kw, idx) => (
-                  <Badge key={idx} variant="danger" className="text-xs py-1 px-2.5 gap-1 font-medium">
+                  <Badge key={idx} variant="danger" className="text-xs py-1 px-3 gap-1 font-semibold">
                     <span>+</span> {kw}
                   </Badge>
                 ))
               ) : (
-                <p className="text-xs text-muted-foreground italic">No missing keywords found for this search.</p>
+                <p className="text-xs text-muted-foreground italic py-2">No missing keywords found matching your filter.</p>
               )}
             </div>
           </TabsContent>
 
           {/* Matched Keywords Tab */}
-          <TabsContent value="matched" className="space-y-2">
+          <TabsContent value="matched" className="space-y-3">
             <div className="flex flex-wrap gap-2">
               {filteredMatched.length > 0 ? (
                 filteredMatched.map((kw, idx) => (
-                  <Badge key={idx} variant="success" className="text-xs py-1 px-2.5 gap-1 font-medium">
-                    <CheckCircle2 className="h-3 w-3" /> {kw}
+                  <Badge key={idx} variant="success" className="text-xs py-1 px-3 gap-1.5 font-semibold">
+                    <CheckCircle2 className="h-3.5 w-3.5" /> {kw}
                   </Badge>
                 ))
               ) : (
-                <p className="text-xs text-muted-foreground italic">No matched keywords found for this search.</p>
+                <p className="text-xs text-muted-foreground italic py-2">No matched keywords found matching your filter.</p>
               )}
             </div>
           </TabsContent>
 
           {/* Weak Keywords Tab */}
-          <TabsContent value="weak" className="space-y-2">
-            <p className="text-xs text-muted-foreground mb-2">
-              These keywords appear only in passing or lack demonstrated project context.
+          <TabsContent value="weak" className="space-y-3">
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              These terms appear in your resume but lack concrete metrics, impact numbers, or depth of project experience.
             </p>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 pt-1">
               {filteredWeak.length > 0 ? (
                 filteredWeak.map((kw, idx) => (
-                  <Badge key={idx} variant="warning" className="text-xs py-1 px-2.5 font-medium">
+                  <Badge key={idx} variant="warning" className="text-xs py-1 px-3 font-semibold">
                     {kw}
                   </Badge>
                 ))
               ) : (
-                <p className="text-xs text-muted-foreground italic">No weak keywords found.</p>
+                <p className="text-xs text-muted-foreground italic py-2">No weak keywords identified.</p>
               )}
             </div>
           </TabsContent>

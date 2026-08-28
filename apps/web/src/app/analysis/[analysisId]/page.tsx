@@ -13,6 +13,7 @@ import {
   Download,
   Loader2,
   Layers,
+  ChevronRight,
 } from "lucide-react";
 import { ProtectedRoute } from "@/components/layout/protected-route";
 import { Button } from "@/components/ui/button";
@@ -43,12 +44,12 @@ export default function AnalysisDetailPage() {
     return (
       <ProtectedRoute>
         <div className="container mx-auto p-4 sm:p-6 lg:p-8 max-w-5xl space-y-6">
-          <Skeleton className="h-10 w-64" />
+          <Skeleton className="h-10 w-64 rounded-xl" />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Skeleton className="h-64 w-full" />
-            <Skeleton className="h-64 w-full md:col-span-2" />
+            <Skeleton className="h-64 w-full rounded-2xl" />
+            <Skeleton className="h-64 w-full md:col-span-2 rounded-2xl" />
           </div>
-          <Skeleton className="h-96 w-full" />
+          <Skeleton className="h-96 w-full rounded-2xl" />
         </div>
       </ProtectedRoute>
     );
@@ -59,8 +60,9 @@ export default function AnalysisDetailPage() {
       <ProtectedRoute>
         <div className="container mx-auto p-12 text-center max-w-md space-y-4">
           <h2 className="text-xl font-bold text-foreground">Analysis Report Not Found</h2>
+          <p className="text-xs text-muted-foreground">The requested analysis report does not exist or has expired.</p>
           <Link href="/dashboard">
-            <Button size="sm">Back to Dashboard</Button>
+            <Button size="sm" variant="outline">Back to Dashboard</Button>
           </Link>
         </div>
       </ProtectedRoute>
@@ -84,21 +86,21 @@ export default function AnalysisDetailPage() {
 
   return (
     <ProtectedRoute>
-      <div className="container mx-auto p-4 sm:p-6 lg:p-8 max-w-5xl space-y-8">
+      <div className="container mx-auto p-4 sm:p-6 lg:p-8 max-w-5xl space-y-8 animate-fade-in">
         {/* Top Navigation */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/80">
           <div className="flex items-center gap-3">
             <Link href="/dashboard">
-              <Button variant="ghost" size="icon" className="h-8 w-8">
+              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl">
                 <ArrowLeft className="h-4 w-4" />
               </Button>
             </Link>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground">
                   ATS Match & Compatibility Report
                 </h1>
-                <Badge variant="outline" className="text-xs">
+                <Badge variant="outline" className="text-[10px] font-bold">
                   {formatDate(analysis.created_at)}
                 </Badge>
               </div>
@@ -119,7 +121,7 @@ export default function AnalysisDetailPage() {
               variant="secondary"
               size="sm"
               onClick={() => setShowPreviewModal(true)}
-              className="gap-1.5 text-xs"
+              className="gap-1.5 text-xs font-semibold"
             >
               <Download className="h-3.5 w-3.5" />
               <span>Export ATS PDF/DOCX</span>
@@ -129,7 +131,7 @@ export default function AnalysisDetailPage() {
               disabled={optimizing}
               variant="gradient"
               size="sm"
-              className="gap-1.5 text-xs font-semibold shadow-sm"
+              className="gap-1.5 text-xs font-bold shadow-subtle hover:shadow-glow"
             >
               {optimizing ? (
                 <>
@@ -148,14 +150,18 @@ export default function AnalysisDetailPage() {
 
         <AntiFabricationBanner />
 
-        {/* Top Summary Banner */}
+        {/* Executive Summary Banner */}
         {analysis.summary_critique && (
-          <Card className="bg-muted/30 border-primary/20">
-            <CardContent className="p-5 text-sm text-foreground leading-relaxed flex items-start gap-3">
-              <Sparkles className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-              <div>
-                <strong className="font-semibold text-foreground">Executive Analysis Summary: </strong>
-                <span className="text-muted-foreground">{analysis.summary_critique}</span>
+          <Card className="border border-indigo-200/80 bg-indigo-50/40 dark:border-indigo-900/50 dark:bg-indigo-950/20 shadow-subtle">
+            <CardContent className="p-5 sm:p-6 text-xs sm:text-sm text-foreground leading-relaxed flex items-start gap-3.5">
+              <div className="h-8 w-8 rounded-xl bg-indigo-100 dark:bg-indigo-900/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-primary shrink-0 mt-0.5 shadow-subtle">
+                <Sparkles className="h-4 w-4" />
+              </div>
+              <div className="space-y-1">
+                <strong className="font-bold text-foreground text-xs uppercase tracking-wider block text-primary">
+                  Executive Analysis Summary
+                </strong>
+                <p className="text-muted-foreground leading-relaxed">{analysis.summary_critique}</p>
               </div>
             </CardContent>
           </Card>

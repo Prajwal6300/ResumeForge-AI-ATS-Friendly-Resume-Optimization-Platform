@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { UploadCloud, FileText, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { UploadCloud, FileText, CheckCircle2, AlertCircle, Loader2, Sparkles, FileCheck, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ResumeUploaderProps {
@@ -26,7 +27,7 @@ export function ResumeUploader({ onUpload, isUploading = false }: ResumeUploader
       return;
     }
     if (file.size > 10 * 1024 * 1024) {
-      setErrorMessage("File size exceeds 10MB limit.");
+      setErrorMessage("File size exceeds the 10MB limit.");
       return;
     }
     setSelectedFile(file);
@@ -60,9 +61,9 @@ export function ResumeUploader({ onUpload, isUploading = false }: ResumeUploader
   const handleUploadClick = async () => {
     if (!selectedFile) return;
     try {
-      setUploadStep("Uploading file...");
-      setTimeout(() => setUploadStep("Parsing layout & text streams..."), 500);
-      setTimeout(() => setUploadStep("Extracting structured resume sections..."), 1200);
+      setUploadStep("Uploading document...");
+      setTimeout(() => setUploadStep("Parsing layout & text streams..."), 600);
+      setTimeout(() => setUploadStep("Extracting structured resume sections..."), 1300);
       await onUpload(selectedFile);
     } catch (err: any) {
       setErrorMessage(err.message || "Failed to upload and parse resume.");
@@ -71,18 +72,18 @@ export function ResumeUploader({ onUpload, isUploading = false }: ResumeUploader
   };
 
   return (
-    <Card className="w-full">
-      <CardContent className="p-6">
+    <Card className="w-full border border-border/80 shadow-dropdown overflow-hidden">
+      <CardContent className="p-6 sm:p-8 space-y-6">
         <div
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
           onDragOver={handleDrag}
           onDrop={handleDrop}
           onClick={() => inputRef.current?.click()}
-          className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${
+          className={`relative border-2 border-dashed rounded-2xl p-8 sm:p-12 text-center cursor-pointer transition-all duration-200 ${
             dragActive
-              ? "border-primary bg-primary/5 scale-[0.99]"
-              : "border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/30"
+              ? "border-primary bg-indigo-50/50 dark:bg-indigo-950/30 scale-[0.99] shadow-glow"
+              : "border-border/80 bg-muted/10 hover:border-primary/50 hover:bg-muted/30"
           }`}
         >
           <input
@@ -93,38 +94,51 @@ export function ResumeUploader({ onUpload, isUploading = false }: ResumeUploader
             className="hidden"
           />
 
-          <div className="flex flex-col items-center justify-center space-y-3">
-            <div className="h-12 w-12 rounded-full bg-blue-50 dark:bg-blue-950 flex items-center justify-center text-blue-600">
-              <UploadCloud className="h-6 w-6" />
+          <div className="flex flex-col items-center justify-center space-y-4 max-w-sm mx-auto">
+            <div className="h-14 w-14 rounded-2xl bg-gradient-to-tr from-indigo-50 to-violet-50 dark:from-indigo-950 dark:to-violet-950 border border-indigo-200/80 dark:border-indigo-800 flex items-center justify-center text-primary shadow-subtle group-hover:scale-105 transition-transform">
+              <UploadCloud className="h-7 w-7" />
             </div>
-            <div>
-              <p className="font-medium text-sm text-foreground">
-                Drag and drop your resume here, or <span className="text-primary font-semibold underline">browse</span>
+
+            <div className="space-y-1">
+              <p className="font-bold text-sm sm:text-base text-foreground">
+                Drop your resume here, or <span className="text-primary underline">browse files</span>
               </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Supports PDF and DOCX documents (up to 10MB)
+              <p className="text-xs text-muted-foreground">
+                Select a standard single or multi-page resume document
               </p>
+            </div>
+
+            <div className="flex items-center gap-2 pt-1">
+              <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-wider py-0.5 px-2">
+                PDF (.pdf)
+              </Badge>
+              <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-wider py-0.5 px-2">
+                Word (.docx)
+              </Badge>
+              <Badge variant="secondary" className="text-[10px] font-bold uppercase tracking-wider py-0.5 px-2">
+                Max 10 MB
+              </Badge>
             </div>
           </div>
         </div>
 
         {errorMessage && (
-          <Alert variant="destructive" className="mt-4">
+          <Alert variant="destructive" className="py-2.5">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription className="text-xs">{errorMessage}</AlertDescription>
           </Alert>
         )}
 
         {selectedFile && (
-          <div className="mt-4 p-4 rounded-lg border bg-muted/20 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="p-4 rounded-xl border border-border/80 bg-card flex flex-col sm:flex-row items-center justify-between gap-4 shadow-subtle animate-fade-in">
             <div className="flex items-center gap-3 w-full sm:w-auto truncate">
-              <div className="h-9 w-9 rounded-md bg-primary/10 flex items-center justify-center text-primary shrink-0">
+              <div className="h-10 w-10 rounded-xl bg-indigo-50 dark:bg-indigo-950 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-primary shrink-0">
                 <FileText className="h-5 w-5" />
               </div>
               <div className="truncate text-left">
-                <p className="font-medium text-sm truncate">{selectedFile.name}</p>
-                <p className="text-xs text-muted-foreground">
-                  {(selectedFile.size / 1024).toFixed(1)} KB &bull; {selectedFile.name.endsWith(".pdf") ? "PDF Document" : "Word Document"}
+                <p className="font-bold text-xs sm:text-sm truncate text-foreground">{selectedFile.name}</p>
+                <p className="text-[11px] text-muted-foreground">
+                  {(selectedFile.size / 1024).toFixed(1)} KB &bull; {selectedFile.name.endsWith(".pdf") ? "PDF Document" : "Word DOCX"}
                 </p>
               </div>
             </div>
@@ -132,16 +146,17 @@ export function ResumeUploader({ onUpload, isUploading = false }: ResumeUploader
             <Button
               onClick={handleUploadClick}
               disabled={isUploading}
-              className="w-full sm:w-auto gap-2"
+              variant="gradient"
+              className="w-full sm:w-auto gap-2 font-bold text-xs shadow-subtle shrink-0"
             >
               {isUploading ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>{uploadStep || "Processing..."}</span>
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  <span>{uploadStep || "Parsing Document..."}</span>
                 </>
               ) : (
                 <>
-                  <CheckCircle2 className="h-4 w-4" />
+                  <FileCheck className="h-3.5 w-3.5" />
                   <span>Parse & Import Resume</span>
                 </>
               )}

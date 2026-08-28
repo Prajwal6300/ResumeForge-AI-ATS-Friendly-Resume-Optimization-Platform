@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ArrowLeft, Edit3, Sparkles, Eye, Download, Layers, Calendar, FileText } from "lucide-react";
+import { ArrowLeft, Edit3, Sparkles, Eye, Download, Layers, Calendar, FileText, Code2 } from "lucide-react";
 import { ProtectedRoute } from "@/components/layout/protected-route";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -24,9 +24,9 @@ export default function ResumeDetailPage() {
     return (
       <ProtectedRoute>
         <div className="container mx-auto p-4 sm:p-6 lg:p-8 max-w-4xl space-y-6">
-          <Skeleton className="h-10 w-64" />
-          <Skeleton className="h-64 w-full" />
-          <Skeleton className="h-96 w-full" />
+          <Skeleton className="h-10 w-64 rounded-xl" />
+          <Skeleton className="h-44 w-full rounded-2xl" />
+          <Skeleton className="h-80 w-full rounded-2xl" />
         </div>
       </ProtectedRoute>
     );
@@ -39,7 +39,7 @@ export default function ResumeDetailPage() {
           <h2 className="text-xl font-bold text-foreground">Resume Not Found</h2>
           <p className="text-xs text-muted-foreground">The requested resume does not exist or you do not have permission to view it.</p>
           <Link href="/resumes">
-            <Button size="sm">Back to Resumes</Button>
+            <Button size="sm" variant="outline">Back to Resumes</Button>
           </Link>
         </div>
       </ProtectedRoute>
@@ -48,19 +48,19 @@ export default function ResumeDetailPage() {
 
   return (
     <ProtectedRoute>
-      <div className="container mx-auto p-4 sm:p-6 lg:p-8 max-w-4xl space-y-6">
+      <div className="container mx-auto p-4 sm:p-6 lg:p-8 max-w-4xl space-y-6 animate-fade-in">
         {/* Top Navigation */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/80">
           <div className="flex items-center gap-3">
             <Link href="/resumes">
-              <Button variant="ghost" size="icon" className="h-8 w-8">
+              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl">
                 <ArrowLeft className="h-4 w-4" />
               </Button>
             </Link>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold tracking-tight text-foreground">{resume.title}</h1>
-                <Badge variant="secondary" className="capitalize text-[10px]">
+                <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground">{resume.title}</h1>
+                <Badge variant="secondary" className="uppercase text-[10px] font-bold tracking-wider">
                   {resume.file_type || "manual"}
                 </Badge>
               </div>
@@ -72,22 +72,22 @@ export default function ResumeDetailPage() {
 
           <div className="flex flex-wrap items-center gap-2">
             <Link href={`/resumes/${resume.id}/edit`}>
-              <Button size="sm" className="gap-1.5 text-xs font-semibold">
+              <Button size="sm" variant="default" className="gap-1.5 text-xs font-semibold">
                 <Edit3 className="h-3.5 w-3.5" />
                 <span>Open Editor</span>
               </Button>
             </Link>
             <Link href={`/analysis/new?resume_id=${resume.id}`}>
-              <Button variant="gradient" size="sm" className="gap-1.5 text-xs font-semibold">
+              <Button variant="gradient" size="sm" className="gap-1.5 text-xs font-bold shadow-subtle hover:shadow-glow">
                 <Sparkles className="h-3.5 w-3.5" />
-                <span>Match Job Description</span>
+                <span>Match Target JD</span>
               </Button>
             </Link>
             <Button
               variant="outline"
               size="sm"
               onClick={() => setShowPreviewModal(true)}
-              className="gap-1.5 text-xs"
+              className="gap-1.5 text-xs font-semibold"
             >
               <Eye className="h-3.5 w-3.5" />
               <span>Preview / Export</span>
@@ -98,14 +98,15 @@ export default function ResumeDetailPage() {
         {/* Structured Content View */}
         <ResumeStructuredView content={resume.parsed_content} />
 
-        {/* Raw Text Accordion (if uploaded) */}
+        {/* Raw Text Stream Card */}
         {resume.raw_text && (
-          <Card>
+          <Card className="border border-border/80 shadow-subtle">
             <CardContent className="p-6">
-              <h3 className="font-semibold text-xs text-muted-foreground uppercase tracking-wider mb-2">
-                Raw Extracted Text Stream
+              <h3 className="font-bold text-xs text-muted-foreground uppercase tracking-wider mb-2.5 flex items-center gap-2">
+                <Code2 className="h-3.5 w-3.5" />
+                <span>Raw Extracted Text Stream</span>
               </h3>
-              <pre className="text-xs text-muted-foreground whitespace-pre-wrap font-mono max-h-60 overflow-y-auto p-3 rounded-md bg-muted/40 border">
+              <pre className="text-xs text-muted-foreground whitespace-pre-wrap font-mono max-h-60 overflow-y-auto p-4 rounded-xl bg-muted/30 border border-border/60">
                 {resume.raw_text}
               </pre>
             </CardContent>

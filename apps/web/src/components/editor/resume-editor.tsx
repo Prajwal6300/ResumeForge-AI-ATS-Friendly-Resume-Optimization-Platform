@@ -18,6 +18,9 @@ import {
   Code2,
   FolderGit2,
   Layers,
+  Check,
+  ChevronRight,
+  ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -115,20 +118,20 @@ export function ResumeEditor({
 
   return (
     <div className="space-y-6">
-      {/* Top Action Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border bg-card shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-lg bg-blue-50 dark:bg-blue-950 flex items-center justify-center text-blue-600 shrink-0">
+      {/* Top Command Bar Header */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl border border-border/80 bg-card shadow-dropdown">
+        <div className="flex items-center gap-3.5">
+          <div className="h-10 w-10 rounded-xl bg-indigo-50 dark:bg-indigo-950 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-primary shrink-0 shadow-subtle">
             <FileText className="h-5 w-5" />
           </div>
-          <div>
+          <div className="space-y-0.5">
             <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="font-bold text-base h-8 px-2 py-0 max-w-sm"
+              className="font-extrabold text-sm sm:text-base h-8 px-2 py-0 max-w-sm border-transparent hover:border-border/80 focus:border-primary transition-colors"
             />
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Live Interactive Editor &bull; Versioning Active
+            <p className="text-[11px] text-muted-foreground pl-2">
+              Live Document Editor &bull; Immutable Version History
             </p>
           </div>
         </div>
@@ -139,9 +142,10 @@ export function ResumeEditor({
             <select
               value={selectedJDId}
               onChange={(e) => setSelectedJDId(e.target.value)}
-              className="h-9 text-xs rounded-md border border-input bg-background px-3 py-1 text-foreground"
+              aria-label="Align AI with Target JD"
+              className="h-9 text-xs font-semibold rounded-xl border border-border/80 bg-background px-3 py-1 text-foreground shadow-subtle focus:ring-1 focus:ring-primary outline-none"
             >
-              <option value="">-- Align AI with Target JD --</option>
+              <option value="">Align with Target JD...</option>
               {jobDescriptions.map((jd) => (
                 <option key={jd.id} value={jd.id}>
                   {jd.title} ({jd.company || "Target"})
@@ -154,12 +158,12 @@ export function ResumeEditor({
             variant="outline"
             size="sm"
             onClick={() => setShowSuggestions(!showSuggestions)}
-            className="gap-1.5 text-xs h-9"
+            className={`gap-1.5 text-xs h-9 font-semibold shadow-subtle ${showSuggestions ? "border-primary bg-primary/5 text-primary" : ""}`}
           >
             <Sparkles className="h-3.5 w-3.5 text-primary" />
             <span>AI Suggestions</span>
             {suggestions.filter((s) => s.status === "pending").length > 0 && (
-              <Badge variant="default" className="text-[10px] px-1.5 py-0 h-4">
+              <Badge variant="default" className="text-[10px] px-1.5 py-0 h-4 font-bold">
                 {suggestions.filter((s) => s.status === "pending").length}
               </Badge>
             )}
@@ -169,7 +173,7 @@ export function ResumeEditor({
             variant="outline"
             size="sm"
             onClick={() => setShowHistory(!showHistory)}
-            className="gap-1.5 text-xs h-9"
+            className={`gap-1.5 text-xs h-9 font-semibold shadow-subtle ${showHistory ? "border-primary bg-primary/5 text-primary" : ""}`}
           >
             <History className="h-3.5 w-3.5" />
             <span>Versions ({versions.length})</span>
@@ -179,7 +183,7 @@ export function ResumeEditor({
             variant="secondary"
             size="sm"
             onClick={() => setShowPreviewModal(true)}
-            className="gap-1.5 text-xs h-9"
+            className="gap-1.5 text-xs h-9 font-semibold shadow-subtle"
           >
             <Eye className="h-3.5 w-3.5" />
             <span>Preview & Export</span>
@@ -188,8 +192,9 @@ export function ResumeEditor({
           <Button
             onClick={handleSave}
             disabled={isSaving}
+            variant="gradient"
             size="sm"
-            className="gap-1.5 text-xs h-9"
+            className="gap-1.5 text-xs h-9 font-bold shadow-subtle hover:shadow-glow"
           >
             {isSaving ? (
               <>
@@ -216,107 +221,115 @@ export function ResumeEditor({
         {/* Editor Main Content */}
         <div className={`space-y-6 ${showHistory || showSuggestions ? "lg:col-span-3" : "lg:col-span-4"}`}>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid grid-cols-3 sm:grid-cols-6 w-full h-auto p-1 gap-1">
-              <TabsTrigger value="personal" className="text-xs py-2 gap-1.5">
+            <TabsList className="grid grid-cols-3 sm:grid-cols-6 w-full h-auto p-1.5 gap-1.5 bg-muted/50 rounded-2xl border border-border/60">
+              <TabsTrigger value="personal" className="text-xs font-bold py-2 gap-1.5 rounded-xl">
                 <UserIcon className="h-3.5 w-3.5" />
                 <span>Personal</span>
               </TabsTrigger>
-              <TabsTrigger value="summary" className="text-xs py-2 gap-1.5">
+              <TabsTrigger value="summary" className="text-xs font-bold py-2 gap-1.5 rounded-xl">
                 <FileText className="h-3.5 w-3.5" />
                 <span>Summary</span>
               </TabsTrigger>
-              <TabsTrigger value="skills" className="text-xs py-2 gap-1.5">
+              <TabsTrigger value="skills" className="text-xs font-bold py-2 gap-1.5 rounded-xl">
                 <Code2 className="h-3.5 w-3.5" />
                 <span>Skills</span>
               </TabsTrigger>
-              <TabsTrigger value="experience" className="text-xs py-2 gap-1.5">
+              <TabsTrigger value="experience" className="text-xs font-bold py-2 gap-1.5 rounded-xl">
                 <Briefcase className="h-3.5 w-3.5" />
                 <span>Experience</span>
               </TabsTrigger>
-              <TabsTrigger value="projects" className="text-xs py-2 gap-1.5">
+              <TabsTrigger value="projects" className="text-xs font-bold py-2 gap-1.5 rounded-xl">
                 <FolderGit2 className="h-3.5 w-3.5" />
                 <span>Projects</span>
               </TabsTrigger>
-              <TabsTrigger value="education" className="text-xs py-2 gap-1.5">
+              <TabsTrigger value="education" className="text-xs font-bold py-2 gap-1.5 rounded-xl">
                 <GraduationCap className="h-3.5 w-3.5" />
                 <span>Education</span>
               </TabsTrigger>
             </TabsList>
 
             {/* TAB 1: Personal Details */}
-            <TabsContent value="personal">
-              <Card>
-                <CardHeader className="p-6 pb-4">
-                  <CardTitle className="text-base font-semibold">Contact & Header Information</CardTitle>
+            <TabsContent value="personal" className="mt-4">
+              <Card className="border border-border/80 shadow-dropdown bg-card">
+                <CardHeader className="p-6 pb-4 border-b border-border/60">
+                  <CardTitle className="text-base sm:text-lg font-bold">Contact & Header Information</CardTitle>
                   <CardDescription className="text-xs">
-                    Standard single-line ATS contact format.
+                    Standard single-line ATS contact format for optimal parsing.
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="p-6 pt-0 space-y-4">
+                <CardContent className="p-6 space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-foreground">Full Name</label>
+                      <label className="text-xs font-semibold text-foreground">Full Name</label>
                       <Input
                         value={content.personal.name || ""}
                         onChange={(e) => updatePersonal("name", e.target.value)}
                         placeholder="Alex Mercer"
+                        className="h-10 text-xs sm:text-sm"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-foreground">Professional Title</label>
+                      <label className="text-xs font-semibold text-foreground">Professional Title</label>
                       <Input
                         value={content.personal.title || ""}
                         onChange={(e) => updatePersonal("title", e.target.value)}
                         placeholder="Senior Full-Stack Engineer"
+                        className="h-10 text-xs sm:text-sm"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-foreground">Email Address</label>
+                      <label className="text-xs font-semibold text-foreground">Email Address</label>
                       <Input
                         type="email"
                         value={content.personal.email || ""}
                         onChange={(e) => updatePersonal("email", e.target.value)}
                         placeholder="alex@example.com"
+                        className="h-10 text-xs sm:text-sm"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-foreground">Phone Number</label>
+                      <label className="text-xs font-semibold text-foreground">Phone Number</label>
                       <Input
                         value={content.personal.phone || ""}
                         onChange={(e) => updatePersonal("phone", e.target.value)}
                         placeholder="(555) 123-4567"
+                        className="h-10 text-xs sm:text-sm"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-foreground">Location (City, State / Country)</label>
+                      <label className="text-xs font-semibold text-foreground">Location (City, State / Country)</label>
                       <Input
                         value={content.personal.location || ""}
                         onChange={(e) => updatePersonal("location", e.target.value)}
                         placeholder="San Francisco, CA"
+                        className="h-10 text-xs sm:text-sm"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-foreground">LinkedIn URL</label>
+                      <label className="text-xs font-semibold text-foreground">LinkedIn URL</label>
                       <Input
                         value={content.personal.linkedin || ""}
                         onChange={(e) => updatePersonal("linkedin", e.target.value)}
                         placeholder="https://linkedin.com/in/alexmercer"
+                        className="h-10 text-xs sm:text-sm"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-foreground">GitHub URL</label>
+                      <label className="text-xs font-semibold text-foreground">GitHub URL</label>
                       <Input
                         value={content.personal.github || ""}
                         onChange={(e) => updatePersonal("github", e.target.value)}
                         placeholder="https://github.com/alexmercer"
+                        className="h-10 text-xs sm:text-sm"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-foreground">Portfolio Website</label>
+                      <label className="text-xs font-semibold text-foreground">Portfolio Website</label>
                       <Input
                         value={content.personal.website || ""}
                         onChange={(e) => updatePersonal("website", e.target.value)}
                         placeholder="https://alexmercer.dev"
+                        className="h-10 text-xs sm:text-sm"
                       />
                     </div>
                   </div>
@@ -325,13 +338,13 @@ export function ResumeEditor({
             </TabsContent>
 
             {/* TAB 2: Summary */}
-            <TabsContent value="summary">
-              <Card>
-                <CardHeader className="p-6 pb-4 flex flex-row items-center justify-between">
+            <TabsContent value="summary" className="mt-4">
+              <Card className="border border-border/80 shadow-dropdown bg-card">
+                <CardHeader className="p-6 pb-4 flex flex-row items-center justify-between border-b border-border/60">
                   <div>
-                    <CardTitle className="text-base font-semibold">Professional Summary</CardTitle>
+                    <CardTitle className="text-base sm:text-lg font-bold">Professional Summary</CardTitle>
                     <CardDescription className="text-xs">
-                      2-3 concise lines describing your core expertise and value proposition.
+                      2-3 concise lines describing your core expertise and quantifiable value proposition.
                     </CardDescription>
                   </div>
                   <Button
@@ -340,7 +353,7 @@ export function ResumeEditor({
                     size="sm"
                     disabled={isImprovingSection || !content.summary}
                     onClick={handleAIImproveSummary}
-                    className="gap-1.5 text-xs text-primary"
+                    className="gap-1.5 text-xs text-primary font-bold shadow-subtle border-primary/30 hover:bg-primary/10"
                   >
                     {isImprovingSection ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -350,24 +363,24 @@ export function ResumeEditor({
                     <span>AI Enhance Summary</span>
                   </Button>
                 </CardHeader>
-                <CardContent className="p-6 pt-0">
+                <CardContent className="p-6">
                   <Textarea
                     rows={5}
                     value={content.summary || ""}
                     onChange={(e) => updateSummary(e.target.value)}
                     placeholder="Performance-driven Full-Stack Engineer with 5+ years of experience..."
-                    className="text-sm leading-relaxed"
+                    className="text-xs sm:text-sm leading-relaxed"
                   />
                 </CardContent>
               </Card>
             </TabsContent>
 
             {/* TAB 3: Skills */}
-            <TabsContent value="skills">
-              <Card>
-                <CardHeader className="p-6 pb-4 flex flex-row items-center justify-between">
+            <TabsContent value="skills" className="mt-4">
+              <Card className="border border-border/80 shadow-dropdown bg-card">
+                <CardHeader className="p-6 pb-4 flex flex-row items-center justify-between border-b border-border/60">
                   <div>
-                    <CardTitle className="text-base font-semibold">Technical Skills</CardTitle>
+                    <CardTitle className="text-base sm:text-lg font-bold">Technical Skills</CardTitle>
                     <CardDescription className="text-xs">
                       Organized by category for clean ATS scanning.
                     </CardDescription>
@@ -382,15 +395,15 @@ export function ResumeEditor({
                         skills: [...prev.skills, { category: "New Category", items: ["Skill1", "Skill2"] }],
                       }));
                     }}
-                    className="gap-1.5 text-xs"
+                    className="gap-1.5 text-xs font-semibold shadow-subtle"
                   >
                     <Plus className="h-3.5 w-3.5" />
                     <span>Add Category</span>
                   </Button>
                 </CardHeader>
-                <CardContent className="p-6 pt-0 space-y-4">
+                <CardContent className="p-6 space-y-4">
                   {content.skills?.map((cat, catIdx) => (
-                    <div key={catIdx} className="p-4 rounded-xl border bg-muted/20 space-y-3">
+                    <div key={catIdx} className="p-4 rounded-2xl border border-border/70 bg-muted/20 space-y-3 shadow-subtle">
                       <div className="flex items-center justify-between gap-3">
                         <Input
                           value={cat.category}
@@ -399,7 +412,7 @@ export function ResumeEditor({
                             updated[catIdx].category = e.target.value;
                             setContent((prev) => ({ ...prev, skills: updated }));
                           }}
-                          className="h-8 font-semibold text-xs max-w-xs"
+                          className="h-8 font-bold text-xs max-w-xs"
                         />
                         <Button
                           variant="ghost"
@@ -408,14 +421,14 @@ export function ResumeEditor({
                             const updated = content.skills.filter((_, i) => i !== catIdx);
                             setContent((prev) => ({ ...prev, skills: updated }));
                           }}
-                          className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                          className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       </div>
 
                       <div className="space-y-1.5">
-                        <label className="text-[11px] text-muted-foreground">Skills (Comma-separated):</label>
+                        <label className="text-[11px] font-semibold text-muted-foreground">Skills (Comma-separated):</label>
                         <Input
                           value={cat.items.join(", ")}
                           onChange={(e) => {
@@ -424,7 +437,7 @@ export function ResumeEditor({
                             setContent((prev) => ({ ...prev, skills: updated }));
                           }}
                           placeholder="e.g. Python, FastAPI, React, PostgreSQL"
-                          className="h-8 text-xs"
+                          className="h-9 text-xs"
                         />
                       </div>
                     </div>
@@ -434,11 +447,11 @@ export function ResumeEditor({
             </TabsContent>
 
             {/* TAB 4: Experience */}
-            <TabsContent value="experience">
-              <Card>
-                <CardHeader className="p-6 pb-4 flex flex-row items-center justify-between">
+            <TabsContent value="experience" className="mt-4">
+              <Card className="border border-border/80 shadow-dropdown bg-card">
+                <CardHeader className="p-6 pb-4 flex flex-row items-center justify-between border-b border-border/60">
                   <div>
-                    <CardTitle className="text-base font-semibold">Work Experience</CardTitle>
+                    <CardTitle className="text-base sm:text-lg font-bold">Work Experience</CardTitle>
                     <CardDescription className="text-xs">
                       Chronological roles with achievement-driven bullet points.
                     </CardDescription>
@@ -464,19 +477,19 @@ export function ResumeEditor({
                         ],
                       }));
                     }}
-                    className="gap-1.5 text-xs"
+                    className="gap-1.5 text-xs font-semibold shadow-subtle"
                   >
                     <Plus className="h-3.5 w-3.5" />
                     <span>Add Position</span>
                   </Button>
                 </CardHeader>
-                <CardContent className="p-6 pt-0 space-y-6">
+                <CardContent className="p-6 space-y-6">
                   {content.experience?.map((exp, expIdx) => (
-                    <div key={exp.id || expIdx} className="p-4 rounded-xl border bg-muted/20 space-y-4">
+                    <div key={exp.id || expIdx} className="p-5 rounded-2xl border border-border/70 bg-muted/20 space-y-4 shadow-subtle">
                       <div className="flex items-start justify-between gap-3">
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 flex-1">
-                          <div>
-                            <label className="text-[11px] font-medium text-foreground">Position Title</label>
+                          <div className="space-y-1">
+                            <label className="text-[11px] font-bold text-foreground">Position Title</label>
                             <Input
                               value={exp.position}
                               onChange={(e) => {
@@ -484,11 +497,11 @@ export function ResumeEditor({
                                 updated[expIdx].position = e.target.value;
                                 setContent((prev) => ({ ...prev, experience: updated }));
                               }}
-                              className="h-8 text-xs"
+                              className="h-9 text-xs"
                             />
                           </div>
-                          <div>
-                            <label className="text-[11px] font-medium text-foreground">Company</label>
+                          <div className="space-y-1">
+                            <label className="text-[11px] font-bold text-foreground">Company</label>
                             <Input
                               value={exp.company}
                               onChange={(e) => {
@@ -496,11 +509,11 @@ export function ResumeEditor({
                                 updated[expIdx].company = e.target.value;
                                 setContent((prev) => ({ ...prev, experience: updated }));
                               }}
-                              className="h-8 text-xs"
+                              className="h-9 text-xs"
                             />
                           </div>
-                          <div>
-                            <label className="text-[11px] font-medium text-foreground">Dates</label>
+                          <div className="space-y-1">
+                            <label className="text-[11px] font-bold text-foreground">Dates</label>
                             <Input
                               value={exp.start_date + (exp.end_date ? ` – ${exp.end_date}` : "")}
                               onChange={(e) => {
@@ -509,7 +522,7 @@ export function ResumeEditor({
                                 setContent((prev) => ({ ...prev, experience: updated }));
                               }}
                               placeholder="Jan 2022 – Present"
-                              className="h-8 text-xs"
+                              className="h-9 text-xs"
                             />
                           </div>
                         </div>
@@ -521,16 +534,16 @@ export function ResumeEditor({
                             const updated = content.experience.filter((_, i) => i !== expIdx);
                             setContent((prev) => ({ ...prev, experience: updated }));
                           }}
-                          className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0"
+                          className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg shrink-0 mt-6"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
 
                       {/* Highlights */}
-                      <div className="space-y-2 pt-2 border-t">
+                      <div className="space-y-3 pt-3 border-t border-border/60">
                         <div className="flex items-center justify-between">
-                          <span className="text-xs font-semibold text-foreground">
+                          <span className="text-xs font-bold text-foreground">
                             Key Achievements & Bullets:
                           </span>
                           <Button
@@ -542,14 +555,14 @@ export function ResumeEditor({
                               updated[expIdx].highlights.push("Engineered new feature delivering quantifiable business impact.");
                               setContent((prev) => ({ ...prev, experience: updated }));
                             }}
-                            className="h-7 text-xs text-primary gap-1"
+                            className="h-7 text-xs text-primary font-bold gap-1 hover:bg-primary/10"
                           >
                             <Plus className="h-3 w-3" />
                             <span>Add Bullet</span>
                           </Button>
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="space-y-2.5">
                           {exp.highlights.map((hl, hlIdx) => (
                             <BulletEditor
                               key={hlIdx}
@@ -584,11 +597,11 @@ export function ResumeEditor({
             </TabsContent>
 
             {/* TAB 5: Projects */}
-            <TabsContent value="projects">
-              <Card>
-                <CardHeader className="p-6 pb-4 flex flex-row items-center justify-between">
+            <TabsContent value="projects" className="mt-4">
+              <Card className="border border-border/80 shadow-dropdown bg-card">
+                <CardHeader className="p-6 pb-4 flex flex-row items-center justify-between border-b border-border/60">
                   <div>
-                    <CardTitle className="text-base font-semibold">Technical Projects</CardTitle>
+                    <CardTitle className="text-base sm:text-lg font-bold">Technical Projects</CardTitle>
                     <CardDescription className="text-xs">
                       Key engineering projects showcasing real-world technical implementation.
                     </CardDescription>
@@ -612,15 +625,15 @@ export function ResumeEditor({
                         ],
                       }));
                     }}
-                    className="gap-1.5 text-xs"
+                    className="gap-1.5 text-xs font-semibold shadow-subtle"
                   >
                     <Plus className="h-3.5 w-3.5" />
                     <span>Add Project</span>
                   </Button>
                 </CardHeader>
-                <CardContent className="p-6 pt-0 space-y-4">
+                <CardContent className="p-6 space-y-4">
                   {content.projects?.map((proj, projIdx) => (
-                    <div key={proj.id || projIdx} className="p-4 rounded-xl border bg-muted/20 space-y-3">
+                    <div key={proj.id || projIdx} className="p-5 rounded-2xl border border-border/70 bg-muted/20 space-y-3 shadow-subtle">
                       <div className="flex items-start justify-between gap-3">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 flex-1">
                           <Input
@@ -631,7 +644,7 @@ export function ResumeEditor({
                               setContent((prev) => ({ ...prev, projects: updated }));
                             }}
                             placeholder="Project Title"
-                            className="h-8 text-xs font-semibold"
+                            className="h-9 text-xs font-bold"
                           />
                           <Input
                             value={proj.technologies.join(", ")}
@@ -641,7 +654,7 @@ export function ResumeEditor({
                               setContent((prev) => ({ ...prev, projects: updated }));
                             }}
                             placeholder="Technologies (e.g. Next.js, Python, AWS)"
-                            className="h-8 text-xs"
+                            className="h-9 text-xs"
                           />
                         </div>
                         <Button
@@ -651,14 +664,14 @@ export function ResumeEditor({
                             const updated = content.projects.filter((_, i) => i !== projIdx);
                             setContent((prev) => ({ ...prev, projects: updated }));
                           }}
-                          className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                          className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       </div>
 
                       {/* Bullets */}
-                      <div className="space-y-2 pt-2 border-t">
+                      <div className="space-y-2.5 pt-3 border-t border-border/60">
                         {proj.highlights?.map((hl, hlIdx) => (
                           <BulletEditor
                             key={hlIdx}
@@ -692,11 +705,11 @@ export function ResumeEditor({
             </TabsContent>
 
             {/* TAB 6: Education */}
-            <TabsContent value="education">
-              <Card>
-                <CardHeader className="p-6 pb-4 flex flex-row items-center justify-between">
+            <TabsContent value="education" className="mt-4">
+              <Card className="border border-border/80 shadow-dropdown bg-card">
+                <CardHeader className="p-6 pb-4 flex flex-row items-center justify-between border-b border-border/60">
                   <div>
-                    <CardTitle className="text-base font-semibold">Education</CardTitle>
+                    <CardTitle className="text-base sm:text-lg font-bold">Education</CardTitle>
                     <CardDescription className="text-xs">
                       Degrees, institutions, graduation dates, and GPA.
                     </CardDescription>
@@ -722,15 +735,15 @@ export function ResumeEditor({
                         ],
                       }));
                     }}
-                    className="gap-1.5 text-xs"
+                    className="gap-1.5 text-xs font-semibold shadow-subtle"
                   >
                     <Plus className="h-3.5 w-3.5" />
                     <span>Add Degree</span>
                   </Button>
                 </CardHeader>
-                <CardContent className="p-6 pt-0 space-y-4">
+                <CardContent className="p-6 space-y-4">
                   {content.education?.map((edu, eduIdx) => (
-                    <div key={edu.id || eduIdx} className="p-4 rounded-xl border bg-muted/20 space-y-3">
+                    <div key={edu.id || eduIdx} className="p-5 rounded-2xl border border-border/70 bg-muted/20 space-y-3 shadow-subtle">
                       <div className="flex items-start justify-between gap-3">
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 flex-1">
                           <Input
@@ -741,7 +754,7 @@ export function ResumeEditor({
                               setContent((prev) => ({ ...prev, education: updated }));
                             }}
                             placeholder="Degree"
-                            className="h-8 text-xs font-semibold"
+                            className="h-9 text-xs font-bold"
                           />
                           <Input
                             value={edu.institution}
@@ -751,7 +764,7 @@ export function ResumeEditor({
                               setContent((prev) => ({ ...prev, education: updated }));
                             }}
                             placeholder="University / College"
-                            className="h-8 text-xs"
+                            className="h-9 text-xs"
                           />
                           <Input
                             value={edu.gpa || ""}
@@ -761,7 +774,7 @@ export function ResumeEditor({
                               setContent((prev) => ({ ...prev, education: updated }));
                             }}
                             placeholder="GPA (e.g. 3.8/4.0)"
-                            className="h-8 text-xs"
+                            className="h-9 text-xs"
                           />
                         </div>
                         <Button
@@ -771,7 +784,7 @@ export function ResumeEditor({
                             const updated = content.education.filter((_, i) => i !== eduIdx);
                             setContent((prev) => ({ ...prev, education: updated }));
                           }}
-                          className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                          className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
@@ -788,8 +801,8 @@ export function ResumeEditor({
         {(showHistory || showSuggestions) && (
           <div className="lg:col-span-1 space-y-4">
             {showHistory && (
-              <Card>
-                <CardContent className="p-4">
+              <Card className="border border-border/80 shadow-dropdown bg-card">
+                <CardContent className="p-4 sm:p-5">
                   <VersionHistoryDrawer
                     versions={versions}
                     onRestore={onRestoreVersion}
@@ -799,8 +812,8 @@ export function ResumeEditor({
             )}
 
             {showSuggestions && (
-              <Card>
-                <CardContent className="p-4">
+              <Card className="border border-border/80 shadow-dropdown bg-card">
+                <CardContent className="p-4 sm:p-5">
                   <AISuggestionsPanel
                     suggestions={suggestions}
                     onUpdateStatus={async (suggestionId, status) => {
