@@ -31,16 +31,51 @@ class Settings(BaseSettings):
 
     # Database
     DATABASE_URL: str = "sqlite+aiosqlite:///./resumeforge.db"
-    SYNC_DATABASE_URL: str = "sqlite:///./resumeforge.db"
+    SYNC_DATABASE_URL: Optional[str] = None
+
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def normalize_database_url(cls, v: Optional[str]) -> str:
+        if not v:
+            return "sqlite+aiosqlite:///./resumeforge.db"
+        url = str(v).strip()
+        # Normalize postgres:// and postgresql:// to postgresql+asyncpg:// for async SQLAlchemy engine
+        if url.startswith("postgres://"):
+            url = "postgresql+asyncpg://" + url[len("postgres://"):]
+        elif url.startswith("postgresql://") and not url.startswith("postgresql+"):
+            url = "postgresql+asyncpg://" + url[len("postgresql://"):]
+        return url
+
+    @property
+    def sync_database_url_resolved(self) -> str:
+        """Resolve synchronous database connection string for Alembic and sync tools."""
+        if self.SYNC_DATABASE_URL and self.SYNC_DATABASE_URL.strip():
+            url = self.SYNC_DATABASE_URL.strip()
+            if url.startswith("postgres://"):
+                url = "postgresql+psycopg://" + url[len("postgres://"):]
+            elif url.startswith("postgresql+asyncpg://"):
+                url = "postgresql+psycopg://" + url[len("postgresql+asyncpg://"):]
+            return url
+        # Derive from DATABASE_URL
+        if "sqlite" in self.DATABASE_URL:
+            return "sqlite:///./resumeforge.db"
+        elif "postgresql+asyncpg://" in self.DATABASE_URL:
+            return self.DATABASE_URL.replace("postgresql+asyncpg://", "postgresql+psycopg://")
+        elif "postgresql://" in self.DATABASE_URL:
+            return self.DATABASE_URL
+        return "sqlite:///./resumeforge.db"
 
     # CORS
-    ALLOWED_ORIGINS: str = "http://localhost:3000,http://127.0.0.1:3000"
+    ALLOWED_ORIGINS: str = "https://resume-forge-ai-ats-friendly-resume.vercel.app,http://localhost:3000,http://127.0.0.1:3000"
+    CORS_ORIGINS: Optional[str] = None
 
     @property
     def cors_origins(self) -> List[str]:
-        if not self.ALLOWED_ORIGINS:
-            return ["*"]
-        return [origin.strip() for origin in self.ALLOWED_ORIGINS.split(",") if origin.strip()]
+        raw = self.CORS_ORIGINS or self.ALLOWED_ORIGINS or ""
+        if not raw.strip():
+            return ["https://resume-forge-ai-ats-friendly-resume.vercel.app"]
+        origins = [origin.strip() for origin in raw.split(",") if origin.strip()]
+        return origins
 
     # File Storage
     STORAGE_BACKEND: str = "local"  # "local" | "s3"

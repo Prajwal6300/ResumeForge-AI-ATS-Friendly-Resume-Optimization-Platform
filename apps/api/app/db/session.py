@@ -32,10 +32,14 @@ AsyncSessionLocal = async_sessionmaker(
 )
 
 # Sync Engine (for Alembic, seed scripts, background sync tasks)
+sync_connect_args = {}
+if "sqlite" in settings.sync_database_url_resolved:
+    sync_connect_args = {"check_same_thread": False}
+
 sync_engine = create_engine(
-    settings.SYNC_DATABASE_URL,
+    settings.sync_database_url_resolved,
     echo=False,
-    connect_args=connect_args,
+    connect_args=sync_connect_args,
 )
 
 SyncSessionLocal = sessionmaker(

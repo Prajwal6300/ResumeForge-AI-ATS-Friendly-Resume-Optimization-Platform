@@ -5,7 +5,7 @@ import { Download, FileText, Check, LayoutTemplate, Sparkles, Loader2, ShieldChe
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { apiClient } from "@/lib/api-client";
+import { apiClient, API_BASE_URL } from "@/lib/api-client";
 import { TemplateId } from "@/types";
 
 interface TemplatePreviewModalProps {
@@ -49,6 +49,9 @@ export function TemplatePreviewModal({ open, onOpenChange, resumeId }: TemplateP
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateId>("classic");
   const [isExportingPDF, setIsExportingPDF] = useState(false);
   const [isExportingDOCX, setIsExportingDOCX] = useState(false);
+
+  const token = typeof window !== "undefined" ? localStorage.getItem("resumeforge_token") || "" : "";
+  const previewSrc = `${API_BASE_URL}/resumes/${resumeId}/preview?template=${selectedTemplate}${token ? `&token=${encodeURIComponent(token)}` : ""}`;
 
   const handleExport = async (format: "pdf" | "docx") => {
     try {
@@ -146,7 +149,7 @@ export function TemplatePreviewModal({ open, onOpenChange, resumeId }: TemplateP
         {/* Live Rendered Preview Frame */}
         <div className="border border-border/80 rounded-2xl overflow-hidden bg-white shadow-card h-[520px]">
           <iframe
-            src={`/api/v1/resumes/${resumeId}/preview?template=${selectedTemplate}`}
+            src={previewSrc}
             className="w-full h-full border-0 bg-white"
             title="Resume Live ATS Preview"
           />

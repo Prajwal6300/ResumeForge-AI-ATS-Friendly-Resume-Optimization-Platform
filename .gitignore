@@ -62,9 +62,10 @@ Thumbs.db
 
 # Local storage & uploads
 uploads/
-storage/
+/storage/
 tmp/
 temp/
+!apps/api/app/storage/
 *.pdf
 *.docx
 !examples/*.pdf

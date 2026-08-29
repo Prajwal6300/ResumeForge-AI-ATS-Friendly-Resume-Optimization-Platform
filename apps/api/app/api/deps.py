@@ -2,8 +2,8 @@
 ResumeForge AI - Dependency Injection Utilities
 """
 
-from typing import Annotated, AsyncGenerator
-from fastapi import Depends, Header
+from typing import Annotated, AsyncGenerator, Optional
+from fastapi import Depends, Header, Query
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.exceptions import UnauthorizedException
@@ -17,13 +17,20 @@ bearer_scheme = HTTPBearer(auto_error=False)
 
 async def get_current_user(
     db: Annotated[AsyncSession, Depends(get_db)],
-    credentials: Annotated[HTTPAuthorizationCredentials, Depends(bearer_scheme)],
+    credentials: Annotated[Optional[HTTPAuthorizationCredentials], Depends(bearer_scheme)] = None,
+    token_query: Annotated[Optional[str], Query(alias="token")] = None,
 ) -> User:
     """Validate Bearer JWT token and resolve current authenticated User."""
-    if not credentials or not credentials.credentials:
+    raw_token: Optional[str] = None
+    if credentials and credentials.credentials:
+        raw_token = credentials.credentials
+    elif token_query:
+        raw_token = token_query
+
+    if not raw_token:
         raise UnauthorizedException("Authentication token required.")
 
-    payload = decode_token(credentials.credentials)
+    payload = decode_token(raw_token)
     user_id = payload.get("sub")
     if not user_id:
         raise UnauthorizedException("Invalid token payload.")

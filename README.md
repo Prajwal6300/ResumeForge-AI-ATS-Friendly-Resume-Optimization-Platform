@@ -11,11 +11,53 @@
 
 ---
 
+## 🌐 Production Architecture
+
+- **Frontend (Live on Vercel):** [https://resume-forge-ai-ats-friendly-resume.vercel.app/](https://resume-forge-ai-ats-friendly-resume.vercel.app/)
+- **Backend Server:** FastAPI on Linux VPS behind Nginx Reverse Proxy with Gunicorn + Uvicorn Workers and Let's Encrypt SSL/TLS.
+- **Database:** Supabase PostgreSQL with managed Alembic migrations.
+- **AI Orchestrator:** Secure server-side multi-provider engine (OpenAI, Anthropic, Gemini, Ollama, Mock fallback).
+
+```text
+                         USER
+                           │
+                           ▼
+                  ┌─────────────────┐
+                  │     VERCEL      │
+                  │                 │
+                  │ Next.js Frontend│
+                  └────────┬────────┘
+                           │
+                           │ HTTPS
+                           ▼
+                  ┌─────────────────┐
+                  │ BACKEND SERVER  │
+                  │                 │
+                  │ Nginx           │
+                  │      ↓          │
+                  │ Gunicorn        │
+                  │      ↓          │
+                  │ FastAPI         │
+                  └────────┬────────┘
+                           │
+             ┌─────────────┼─────────────┐
+             │             │             │
+             ▼             ▼             ▼
+       ┌──────────┐   ┌──────────┐   ┌─────────────┐
+       │ Supabase │   │ AI APIs  │   │ File Storage│
+       │PostgreSQL│   │OpenAI /  │   │ Private     │
+       │          │   │Claude /  │   │ Documents   │
+       │          │   │Gemini    │   │             │
+       └──────────┘   └──────────┘   └─────────────┘
+```
+
+---
+
 ## 🌟 Key Capabilities & Differentiators
 
 1. **Deterministic 5-Pillar ATS Scoring Engine**:
    - Rather than relying on arbitrary LLM guesses, scores are computed using an exact, explainable mathematical formula:
-     - **Keyword Relevance (40%)**: Exact & synonym matching across whole document.
+     - **Keyword Relevance (40%)**: Exact & synonym matching across the whole document.
      - **Technical Skills Alignment (25%)**: Mandatory technical stack coverage.
      - **Responsibilities Coverage (20%)**: Experience mapping to target duties.
      - **Experience Depth (10%)**: Chronological alignment and tenure.
@@ -34,14 +76,16 @@
 
 ---
 
-## 🏗️ Architecture Overview
+## 🏗️ Project Structure
 
-```
+```text
 ResumeForge AI Monorepo
 ├── apps/
 │   ├── api/                     # Python 3.13 / FastAPI Backend
+│   │   ├── alembic/             # Database Migration Scripts
 │   │   ├── app/
 │   │   │   ├── ai/              # Multi-Provider (OpenAI, Anthropic, Gemini, Ollama, Mock)
+│   │   │   ├── api/             # API Routers & Dependencies (Auth, Resumes, JDs, Exports)
 │   │   │   ├── ats/             # Deterministic 5-Pillar ATS Scorer & Rule Engine
 │   │   │   ├── core/            # Security (bcrypt, JWT), Config, Logging, Exceptions
 │   │   │   ├── db/              # SQLAlchemy Async Engine (PostgreSQL / SQLite)
@@ -49,12 +93,13 @@ ResumeForge AI Monorepo
 │   │   │   ├── matching/        # Tech Synonym Dictionary & Keyword Extractors
 │   │   │   ├── models/          # User, Resume, ResumeVersion, JD, Analysis, AISuggestion
 │   │   │   ├── parsers/         # PDF, Word DOCX, and Heuristic Section Extractor
-│   │   │   ├── repositories/    # Clean DB Data Access Layer
+│   │   │   ├── repositories/    # DB Data Access Layer (IDOR-safe queries)
 │   │   │   ├── schemas/         # Pydantic v2 Request/Response Models
-│   │   │   └── services/        # Business Logic Domain Orchestrators
-│   │   ├── alembic/             # Database Migration Scripts
+│   │   │   ├── services/        # Business Logic Domain Orchestrators
+│   │   │   └── storage/         # Local & S3 Storage Drivers
 │   │   ├── tests/               # 100% Passing Unit and Integration Pytest Suite
-│   │   └── requirements.txt
+│   │   ├── .env.example         # Backend environment template
+│   │   └── requirements.txt     # Backend dependencies
 │   │
 │   └── web/                     # Next.js 14 / TypeScript / Tailwind CSS Frontend
 │       ├── src/
@@ -63,18 +108,19 @@ ResumeForge AI Monorepo
 │       │   ├── hooks/           # TanStack React Query Hooks
 │       │   ├── lib/             # API Client, Auth Context, Utility Helpers
 │       │   └── types/           # Shared TypeScript Interfaces
+│       ├── .env.example         # Frontend environment template
 │       └── package.json
 │
-├── docs/                        # Complete Engineering Specifications & PRD
-├── packages/
-│   └── shared-types/            # Shared TypeScript Schema Definitions
-├── docker-compose.yml           # Multi-Container Deployment Specification
+├── infrastructure/
+│   ├── nginx/                   # Production Nginx reverse proxy configuration
+│   └── systemd/                 # Production systemd service unit file
+├── DEPLOYMENT.md                # Complete Linux VPS & Cloud Deployment Manual
 └── pytest.ini                   # Backend Pytest Configuration
 ```
 
 ---
 
-## 🚀 Quick Start Guide
+## 🚀 Local Development Guide
 
 ### Prerequisites
 - **Python 3.11+** (Tested on Python 3.13)
@@ -85,12 +131,12 @@ ResumeForge AI Monorepo
 # Navigate to API directory
 cd apps/api
 
-# Create & activate virtual environment (optional)
-python -m venv venv
+# Create & activate virtual environment
+python -m venv .venv
 # Windows:
-.\venv\Scripts\activate
+.\.venv\Scripts\activate
 # Linux/macOS:
-source venv/bin/activate
+source .venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
@@ -117,32 +163,60 @@ Web application will be accessible at:
 
 ---
 
-## 🧪 Running the Backend Test Suite
+## 🚢 Production Deployment
 
-Run the full unit and integration test suite with `pytest`:
-```bash
-python -m pytest -v
-```
+For step-by-step production deployment instructions covering:
+- Linux VPS / EC2 setup (Ubuntu 22.04 / 24.04 LTS)
+- Supabase PostgreSQL database connection
+- Running Alembic migrations (`alembic upgrade head`)
+- Configuring Gunicorn with `UvicornWorker`
+- Setting up the `resumeforge-api.service` systemd daemon
+- Nginx reverse proxy with Let's Encrypt SSL/TLS
+- Vercel frontend deployment with `NEXT_PUBLIC_API_URL`
+- Routine updates, log management, and rollback procedures
 
-All 25 tests cover:
-- User registration, JWT issuance, and authentication security.
-- Comprehensive cross-user IDOR access control across all entities.
-- AI safety, anti-fabrication bounds, and adversarial prompt injection defense.
-- Heuristic PDF and DOCX text & section parsers.
-- Synonym dictionary keyword matching, deduplication, and case-insensitive recognition.
-- Deterministic 5-pillar mathematical ATS scoring calculation with edge case validation.
-- ReportLab selectable-text PDF and python-docx generation.
-- End-to-end full user journey integration workflow.
+Please refer to the comprehensive [DEPLOYMENT.md](file:///DEPLOYMENT.md) guide.
 
 ---
 
-## 🔒 Security & Privacy
+## 🧪 Testing
 
-- **Passlib-Free Cryptography**: Uses direct `bcrypt` hashing with modern salt rounds.
+### Running Backend Pytest Suite
+```bash
+cd apps/api
+python -m pytest -v
+```
+
+All 25 tests verify:
+- User registration, JWT issuance, password hashing, and authentication security.
+- Cross-user IDOR access control across all entities.
+- AI safety, anti-fabrication bounds, and prompt injection defense.
+- PDF and DOCX text & section parsers.
+- Synonym dictionary keyword matching and deduplication.
+- Deterministic 5-pillar mathematical ATS scoring calculation.
+- ReportLab selectable-text PDF and python-docx generation.
+- End-to-end full user journey integration workflow.
+
+### Running Frontend Verification
+```bash
+cd apps/web
+npm run lint
+npm run typecheck
+npm test
+npm run build
+```
+
+---
+
+## 🔒 Security & Privacy Architecture
+
+- **Zero Client-Exposed Secrets**: The frontend bundle never receives database URLs, JWT secret keys, or AI provider credentials.
+- **Strict Origin CORS**: FastAPI allows only the configured production frontend origin.
+- **Role & Ownership Isolation (IDOR Defense)**: Every resource query joins on the authenticated user's ID.
 - **Path-Traversal Free Storage**: Local storage drivers enforce strict canonical base path checks.
-- **SQLAlchemy Async Protection**: 100% parameterized queries eliminating SQL injection vectors.
-- **Zero Third-Party Training**: User uploaded files are strictly utilized for runtime analysis and never sent to public training corpora.
-                                     
+- **SQLAlchemy Parameterized Queries**: Eliminates SQL injection vulnerabilities.
+- **Untrusted Input Isolation**: Resume and Job Description inputs are wrapped in boundary tags to prevent prompt injection.
+
 ---
 
 ## 📄 License

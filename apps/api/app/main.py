@@ -81,8 +81,9 @@ def create_app() -> FastAPI:
         CORSMiddleware,
         allow_origins=settings.cors_origins,
         allow_credentials=True,
-        allow_methods=["*"],
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"],
         allow_headers=["*"],
+        expose_headers=["X-Request-ID", "X-Response-Time-MS"],
     )
 
     # 3. Register Custom Exception Handlers
@@ -94,10 +95,13 @@ def create_app() -> FastAPI:
     # 4. Mount Static Uploads (for development local storage)
     uploads_path = Path(settings.LOCAL_UPLOAD_DIR).resolve()
     uploads_path.mkdir(parents=True, exist_ok=True)
-    application.mount("/uploads", StaticFiles(directory=str(uploads_path)), name="uploads")
+    if settings.ENVIRONMENT != "production":
+        application.mount("/uploads", StaticFiles(directory=str(uploads_path)), name="uploads")
 
-    # 5. Root Health Check Endpoint
+    # 5. Health Check Endpoints
     @application.get("/health", tags=["Health"])
+    @application.get("/api/health", tags=["Health"])
+    @application.get("/api/v1/health", tags=["Health"])
     async def health_check():
         return {
             "status": "healthy",

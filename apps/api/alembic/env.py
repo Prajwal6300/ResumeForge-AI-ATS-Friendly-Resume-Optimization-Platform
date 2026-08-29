@@ -22,7 +22,7 @@ target_metadata = Base.metadata
 
 
 def run_migrations_offline() -> None:
-    url = settings.SYNC_DATABASE_URL
+    url = settings.sync_database_url_resolved
     context.configure(
         url=url,
         target_metadata=target_metadata,

@@ -1,0 +1,36 @@
+[Unit]
+Description=ResumeForge AI - FastAPI Production Backend
+After=network.target remote-fs.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=resumeforge
+Group=resumeforge
+WorkingDirectory=/opt/resumeforge/apps/api
+EnvironmentFile=/opt/resumeforge/apps/api/.env
+ExecStart=/opt/resumeforge/apps/api/.venv/bin/gunicorn app.main:app \
+    --workers 2 \
+    --worker-class uvicorn.workers.UvicornWorker \
+    --bind 127.0.0.1:8000 \
+    --timeout 120 \
+    --keep-alive 5 \
+    --access-logfile /var/log/resumeforge/access.log \
+    --error-logfile /var/log/resumeforge/error.log \
+    --capture-output \
+    --enable-stdio-inheritance
+
+Restart=always
+RestartSec=5s
+KillMode=mixed
+TimeoutStopSec=30
+
+# Security Sandboxing & Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/opt/resumeforge/apps/api/uploads /var/log/resumeforge
+
+[Install]
+WantedBy=multi-user.target

@@ -1,6 +1,18 @@
 import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from "axios";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+function resolveApiBaseUrl(): string {
+  let url = process.env.NEXT_PUBLIC_API_URL?.trim();
+  if (!url) {
+    return "/api/v1";
+  }
+  url = url.replace(/\/+$/, "");
+  if (!url.endsWith("/api/v1") && !url.includes("/api/")) {
+    url = `${url}/api/v1`;
+  }
+  return url;
+}
+
+export const API_BASE_URL = resolveApiBaseUrl();
 
 export const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
