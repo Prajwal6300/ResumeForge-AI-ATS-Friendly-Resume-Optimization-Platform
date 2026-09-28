@@ -1,0 +1,10 @@
+{
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Request-ID", "value": "[random]" }
+      ]
+    }
+  ]
+}

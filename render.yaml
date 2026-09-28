@@ -1,0 +1,49 @@
+# Render.com Blueprint for ResumeForge AI Backend
+# This file configures the Docker-based Python service on Render.
+# Free tier: dyno sleeps after ~15 min of inactivity (first request is slow).
+
+services:
+  - type: web
+    name: resumeforge-api
+    env: docker
+    rootDir: apps/api
+    dockerfilePath: Dockerfile
+    # Free plan: 1 CPU, 512MB RAM; dyno sleeps after 15 min idle
+    # Health check: /health returns {"status":"healthy"}
+    env_variables:
+      ENVIRONMENT: production
+      DEBUG: "false"
+      SECRET_KEY: ""  # Set via Dashboard > Generate Secret (sync: false)
+      DATABASE_URL: ""  # Set via Dashboard (sync: false)
+      CORS_ORIGINS: ""  # Set via Dashboard (sync: false)
+      STORAGE_BACKEND: local
+      LOCAL_UPLOAD_DIR: ./uploads
+      MAX_UPLOAD_SIZE_MB: "10"
+      ALLOWED_EXTENSIONS: pdf,docx
+      S3_ENDPOINT_URL: ""  # Set via Dashboard (sync: false) if using S3
+      S3_BUCKET: ""  # Set via Dashboard (sync: false) if using S3
+      S3_REGION: us-east-1
+      S3_ACCESS_KEY_ID: ""  # Set via Dashboard (sync: false) if using S3
+      S3_SECRET_ACCESS_KEY: ""  # Set via Dashboard (sync: false) if using S3
+      DEFAULT_AI_PROVIDER: mock
+      OPENAI_API_KEY: ""  # Set via Dashboard (sync: false) if using OpenAI
+      ANTHROPIC_API_KEY: ""  # Set via Dashboard (sync: false) if using Anthropic
+      GEMINI_API_KEY: ""  # Set via Dashboard (sync: false) if using Gemini
+      ATS_WEIGHT_KEYWORD_RELEVANCE: "40.0"
+      ATS_WEIGHT_TECHNICAL_SKILLS: "25.0"
+      ATS_WEIGHT_RESPONSIBILITIES: "20.0"
+      ATS_WEIGHT_EXPERIENCE_RELEVANCE: "10.0"
+      ATS_WEIGHT_RESUME_STRUCTURE: "5.0"
+      NEXT_PUBLIC_API_URL: ""  # Set on Vercel (build-time env var)
+    # Auto-detects Dockerfile at service root
+    # The Dockerfile is at apps/api/Dockerfile
+    # Health check path: /health
+    # Logs: https://dashboard.render.com/resumeforge-api/logs
+    # Timeout: 15 minutes (free tier)
+    # Kill signal: SIGTERM
+    # Start command: uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
+    # Runtime: Python 3.12 (from Dockerfile)
+
+# Note: Render free tier dynos sleep after ~15 minutes of inactivity.
+# The first request after sleep takes ~1-2 seconds (cold start).
+# Keep this in mind for real-time API responsiveness.

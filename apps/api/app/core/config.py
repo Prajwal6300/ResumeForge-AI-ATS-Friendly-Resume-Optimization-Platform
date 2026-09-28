@@ -4,7 +4,7 @@ Managed with Pydantic Settings.
 """
 
 from typing import List, Optional
-from pydantic import AnyHttpUrl, field_validator
+from pydantic import AnyHttpUrl, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -30,22 +30,28 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
 
     # Database
-    DATABASE_URL: str = "sqlite+aiosqlite:///./resumeforge.db"
+    DATABASE_URL: str = Field(
+        default="sqlite+aiosqlite:///./resumeforge.db",
+        description="Database URL. SQLite for local dev; PostgreSQL (postgresql+asyncpg://) for production. "
+        "Auto-converts from postgres:// or postgresql://.",
+    )
     SYNC_DATABASE_URL: Optional[str] = None
 
+    # Normalize postgres:// and postgresql:// to postgresql+asyncpg:// for async SQLAlchemy engine
     @field_validator("DATABASE_URL", mode="before")
     @classmethod
-    def normalize_database_url(cls, v: Optional[str]) -> str:
+    def normalize_database_url(cls, v: str) -> str:
         if not v:
             return "sqlite+aiosqlite:///./resumeforge.db"
         url = str(v).strip()
-        # Normalize postgres:// and postgresql:// to postgresql+asyncpg:// for async SQLAlchemy engine
+        # Auto-convert postgres:// -> postgresql+asyncpg://
         if url.startswith("postgres://"):
             url = "postgresql+asyncpg://" + url[len("postgres://"):]
         elif url.startswith("postgresql://") and not url.startswith("postgresql+"):
             url = "postgresql+asyncpg://" + url[len("postgresql://"):]
         return url
 
+    # Derive sync URL from DATABASE_URL if not explicitly set
     @property
     def sync_database_url_resolved(self) -> str:
         """Resolve synchronous database connection string for Alembic and sync tools."""
@@ -66,15 +72,24 @@ class Settings(BaseSettings):
         return "sqlite:///./resumeforge.db"
 
     # CORS
-    ALLOWED_ORIGINS: str = "https://resume-forge-ai-ats-friendly-resume.vercel.app,http://localhost:3000,http://127.0.0.1:3000"
-    CORS_ORIGINS: Optional[str] = None
+    CORS_ORIGINS: str = Field(
+        default="https://resume-forge-ai-ats-friendly-resume.vercel.app,http://localhost:3000,http://127.0.0.1:3000",
+        description="Comma-separated list of allowed origins. No wildcards when credentials are enabled.",
+    )
+    CORS_ORIGINS_ALLOW_CREDENTIALS: bool = Field(
+        default=True,
+        description="Whether CORS allows credentials (cookies/authorization headers).",
+    )
 
     @property
     def cors_origins(self) -> List[str]:
-        raw = self.CORS_ORIGINS or self.ALLOWED_ORIGINS or ""
+        raw = self.CORS_ORIGINS or ""
         if not raw.strip():
             return ["https://resume-forge-ai-ats-friendly-resume.vercel.app"]
         origins = [origin.strip() for origin in raw.split(",") if origin.strip()]
+        # Disallow wildcard "*" when credentials are enabled
+        if self.CORS_ORIGINS_ALLOW_CREDENTIALS and "*" in origins:
+            origins = [o for o in origins if o != "*"]
         return origins
 
     # File Storage
@@ -83,15 +98,15 @@ class Settings(BaseSettings):
     MAX_UPLOAD_SIZE_MB: int = 10
     ALLOWED_EXTENSIONS: List[str] = ["pdf", "docx"]
 
-    # S3 (optional)
-    S3_BUCKET: str = "resumeforge-storage"
-    S3_REGION: str = "us-east-1"
-    S3_ACCESS_KEY: Optional[str] = None
-    S3_SECRET_KEY: Optional[str] = None
+    # S3 (optional, for Render free tier / Render-compatible storage)
     S3_ENDPOINT_URL: Optional[str] = None
+    S3_BUCKET: Optional[str] = None
+    S3_REGION: str = "us-east-1"
+    S3_ACCESS_KEY_ID: Optional[str] = None
+    S3_SECRET_ACCESS_KEY: Optional[str] = None
 
-    # AI Providers
-    DEFAULT_AI_PROVIDER: str = "mock"  # "openai" | "anthropic" | "gemini" | "ollama" | "mock"
+    # AI Provider Configuration
+    DEFAULT_AI_PROVIDER: str = "mock"
     OPENAI_API_KEY: Optional[str] = None
     OPENAI_MODEL: str = "gpt-4o-mini"
     ANTHROPIC_API_KEY: Optional[str] = None

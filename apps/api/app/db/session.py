@@ -1,8 +1,10 @@
 """
 ResumeForge AI - Database Session Management
 Supports Async SQLAlchemy with PostgreSQL (production) and SQLite (dev/test).
+Handles Supabase pgbouncer pooler quirks (statement_cache_size=0).
 """
 
+import os
 from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy import create_engine
@@ -15,10 +17,20 @@ connect_args = {}
 if "sqlite" in settings.DATABASE_URL:
     connect_args = {"check_same_thread": False}
 
+# Pgbouncer pooler quirk: in transaction mode, prepared statement cache must be 0
+# to avoid "Prepared statement does not exist" errors.
+# Detect this from the DATABASE_URL if it contains a pooler endpoint.
+_db_url_lower = settings.DATABASE_URL.lower()
+if "pooler" in _db_url_lower or "supabase" in _db_url_lower:
+    connect_args["statement_cache_size"] = 0
+    logger.info(
+        "Detected pgbouncer pooler in DATABASE_URL; setting statement_cache_size=0"
+    )
+
 # Async Engine for main API operations
 async_engine = create_async_engine(
     settings.DATABASE_URL,
-    echo=False,
+    echo=settings.DEBUG,
     connect_args=connect_args,
 )
 
@@ -38,7 +50,7 @@ if "sqlite" in settings.sync_database_url_resolved:
 
 sync_engine = create_engine(
     settings.sync_database_url_resolved,
-    echo=False,
+    echo=settings.DEBUG,
     connect_args=sync_connect_args,
 )
 
