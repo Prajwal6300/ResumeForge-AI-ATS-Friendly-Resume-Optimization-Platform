@@ -88,43 +88,41 @@ export default function SettingsPage() {
                   <div className="space-y-1.5">
                     <label className="text-xs font-semibold text-foreground">Email Address</label>
                     <Input value={user?.email || ""} disabled className="h-10 text-xs sm:text-sm bg-muted/40 text-muted-foreground font-mono" />
-                  </div>
 
-                  <div className="space-y-1.5">
                     <label className="text-xs font-semibold text-foreground">Full Name</label>
                     <Input
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       className="h-10 text-xs sm:text-sm"
                     />
-                  </div>
 
-                  <div className="pt-4 border-t border-border/60 space-y-3">
-                    <h4 className="text-xs font-bold text-foreground flex items-center gap-1.5 uppercase tracking-wider">
-                      <Lock className="h-3.5 w-3.5 text-muted-foreground" />
-                      <span>Change Password (Leave blank to keep current)</span>
-                    </h4>
+                    <div className="pt-4 border-t border-border/60 space-y-3">
+                      <h4 className="text-xs font-bold text-foreground flex items-center gap-1.5 uppercase tracking-wider">
+                        <Lock className="h-3.5 w-3.5 text-muted-foreground" />
+                        <span>Change Password (Leave blank to keep current)</span>
+                      </h4>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div className="space-y-1.5">
-                        <label className="text-[11px] font-semibold text-muted-foreground">New Password</label>
-                        <Input
-                          type="password"
-                          placeholder="••••••••"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          className="h-9 text-xs"
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[11px] font-semibold text-muted-foreground">Confirm Password</label>
-                        <Input
-                          type="password"
-                          placeholder="••••••••"
-                          value={confirmPassword}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
-                          className="h-9 text-xs"
-                        />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="space-y-1.5">
+                          <label className="text-[11px] font-semibold text-muted-foreground">New Password</label>
+                          <Input
+                            type="password"
+                            placeholder="••••••••"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="h-9 text-xs"
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-[11px] font-semibold text-muted-foreground">Confirm Password</label>
+                          <Input
+                            type="password"
+                            placeholder="••••••••"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            className="h-9 text-xs"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -151,10 +149,18 @@ export default function SettingsPage() {
                 <div>
                   <span className="font-bold text-foreground text-xs block mb-1">Supported Providers:</span>
                   <div className="flex flex-wrap gap-1.5">
-                    <Badge variant="secondary" className="text-[10px] font-semibold">OpenAI GPT-4o</Badge>
-                    <Badge variant="secondary" className="text-[10px] font-semibold">Claude 3.5</Badge>
-                    <Badge variant="secondary" className="text-[10px] font-semibold">Gemini Pro</Badge>
-                    <Badge variant="secondary" className="text-[10px] font-semibold">Local Ollama</Badge>
+                    <Badge variant="default" className="text-[10px] font-semibold">
+                      <span className="font-medium">OpenAI GPT-4o</span>
+                    </Badge>
+                    <Badge variant="outline" className="text-[10px] font-semibold">
+                      <span className="opacity-70">Claude 3.5</span>
+                    </Badge>
+                    <Badge variant="outline" className="text-[10px] font-semibold">
+                      <span className="opacity-70">Gemini Pro</span>
+                    </Badge>
+                    <Badge variant="outline" className="text-[10px] font-semibold">
+                      <span className="opacity-70">Local Ollama</span>
+                    </Badge>
                   </div>
                 </div>
 
