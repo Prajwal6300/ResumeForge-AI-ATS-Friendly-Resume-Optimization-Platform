@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated for ResumeForge AI - Premium SaaS Product Favicon -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#18181b"/>
+  <!-- Purple gradient sparkle motif -->
+  <path fill="#4f46e5" d="M32 2C14.14 2 2 14.14 2 32s12.14 30 32 30 30-12.14 30-32S50.14 2 32 2zm0 58C13.36 58 2 45.64 2 32S13.36 6 32 6s30 13.36 30-32S46.64 2 32 2zm-9.05 23.05L31 35l5.7-5.7L40.1 22.1z"/>
+  <circle cx="32" cy="32" r="8" fill="rgba(79, 70, 229, 0.3)"/>
+  <!-- Additional sparkle accents -->
+  <path fill="#a78bfa" d="M25 40l7-5L41 29l-5 7h5v5h-5z"/>
+  <path fill="#f472b6" d="M39 35l5-7l-2.5-4l4-2.5l5 7h-5v-5h5z"/>
+</svg>
