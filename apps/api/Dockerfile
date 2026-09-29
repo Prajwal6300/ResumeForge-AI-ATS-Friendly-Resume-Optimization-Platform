@@ -24,6 +24,9 @@ COPY app /app/app
 # Switch to non-root user
 USER resumeforge
 
+# Create uploads directory with proper ownership for non-root user
+RUN mkdir -p /app/uploads && chown resumeforge:resumeforge /app/uploads
+
 # Expose the port the app runs on
 EXPOSE 8000
 

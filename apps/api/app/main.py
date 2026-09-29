@@ -61,10 +61,11 @@ async def lifespan(app: FastAPI):
         logger.error(f"Database initialization error: {e}")
         raise
 
-    # Ensure uploads directory exists
-    uploads_dir = Path(settings.LOCAL_UPLOAD_DIR).resolve()
-    uploads_dir.mkdir(parents=True, exist_ok=True)
-    logger.info(f"Local storage directory verified at: {uploads_dir}")
+    # Ensure uploads directory exists (only for local storage; S3 backend uses object storage)
+    if settings.STORAGE_BACKEND == "local":
+        uploads_dir = Path(settings.LOCAL_UPLOAD_DIR).resolve()
+        uploads_dir.mkdir(parents=True, exist_ok=True)
+        logger.info(f"Local storage directory verified at: {uploads_dir}")
 
     yield
 
@@ -127,10 +128,11 @@ def create_app() -> FastAPI:
     application.add_exception_handler(Exception, generic_exception_handler)
 
     # ───── 4. Mount Static Uploads ────────────────────────────────────────
-    uploads_path = Path(settings.LOCAL_UPLOAD_DIR).resolve()
-    uploads_path.mkdir(parents=True, exist_ok=True)
-    if settings.ENVIRONMENT != "production":
-        application.mount("/uploads", StaticFiles(directory=str(uploads_path)), name="uploads")
+    if settings.STORAGE_BACKEND == "local":
+        uploads_path = Path(settings.LOCAL_UPLOAD_DIR).resolve()
+        uploads_path.mkdir(parents=True, exist_ok=True)
+        if settings.ENVIRONMENT != "production":
+            application.mount("/uploads", StaticFiles(directory=str(uploads_path)), name="uploads")
 
     # ───── 5. Health Check Endpoints ──────────────────────────────────────
     @application.get("/health", tags=["Health"])
