@@ -4,6 +4,7 @@ Supports Async SQLAlchemy with PostgreSQL (production) and SQLite (dev/test).
 Handles Supabase pgbouncer pooler quirks (statement_cache_size=0).
 """
 
+import logging
 import os
 from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
@@ -11,6 +12,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 from app.core.config import settings
 from app.db.base import Base
+
+logger = logging.getLogger(__name__)
 
 # Determine connect args based on DB engine
 connect_args = {}
