@@ -159,6 +159,6 @@
   @apply transition-all duration-150 ease-out;
 }
 .transition-fast {
-  @apply transition-property-color, transition-property-background, transition-property-border-color, transition-property-shadow;
+  @apply transition-colors transition-shadow;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
