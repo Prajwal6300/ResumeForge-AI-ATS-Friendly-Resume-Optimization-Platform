@@ -4,34 +4,52 @@
 
 @layer base {
   :root {
-    /* Sophisticated Warm-Neutral Light Theme */
+    /* Premium Sophisticated Light Theme */
     --background: 240 14% 99%;
-    --foreground: 240 10% 4%;
+    --foreground: 240 10% 8%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 4%;
+    --card-foreground: 240 10% 8%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 4%;
-    
-    /* Signature Obsidian & Luxury Indigo */
-    --primary: 243 75% 59%;
+    --popover-foreground: 240 10% 8%;
+
+    /* Refined Indigo-Violet Accent (used sparingly for emphasis) */
+    --primary: 243 75% 55%;
     --primary-foreground: 0 0% 100%;
-    
-    --secondary: 240 5% 96%;
+
+    /* Sophisticated Neutral Grays */
+    --secondary: 240 6% 94%;
     --secondary-foreground: 240 6% 10%;
-    
+
+    /* Muted graids for backgrounds */
     --muted: 240 5% 96%;
-    --muted-foreground: 240 4% 46%;
-    
-    --accent: 240 5% 94%;
+    --muted-foreground: 240 4% 45%;
+
+    --accent: 20 30% 98%;
     --accent-foreground: 240 6% 10%;
-    
-    --destructive: 0 84% 60%;
+
+    /* Purpose-built semantic states */
+    --destructive: 0 80% 55%;
     --destructive-foreground: 0 0% 98%;
-    
-    --border: 240 6% 90%;
-    --input: 240 6% 88%;
-    --ring: 243 75% 59%;
-    --radius: 0.625rem;
+
+    --border: 240 6% 86%;
+    --input: 240 5% 92%;
+    --ring: 243 75% 55%;
+
+    --radius: 0.5rem;
+
+    /* Enhanced shadow scale */
+    --shadow-subtle: 0 1px 2px 0 rgb(0 0 0 / 0.03);
+    --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.04);
+    --shadow-card-hover: 0 8px 22px -4px rgb(0 0 0 / 0.06), 0 4px 8px -2px rgb(0 0 0 / 0.04);
+    --shadow-input: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    --shadow-glow: 0 0 0 1px rgb(79 70 229 / 0.15), 0 4px 16px -4px rgb(79 70 229 / 0.1);
+    --shadow-focus: 0 0 0 2px rgb(79 70 229 / 0.15);
+
+    /* Elevation levels */
+    --elev-1: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --elev-2: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.04);
+    --elev-3: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.04);
+    --elev-4: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.04);
   }
 
   .dark {
@@ -41,7 +59,7 @@
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 6%;
     --popover-foreground: 0 0% 98%;
-    --primary: 243 75% 65%;
+    --primary: 243 75% 60%;
     --primary-foreground: 0 0% 100%;
     --secondary: 240 4% 16%;
     --secondary-foreground: 0 0% 98%;
@@ -49,11 +67,11 @@
     --muted-foreground: 240 5% 65%;
     --accent: 240 4% 16%;
     --accent-foreground: 0 0% 98%;
-    --destructive: 0 72% 51%;
+    --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 4% 18%;
-    --input: 240 4% 18%;
-    --ring: 243 75% 65%;
+    --input: 240 4% 16%;
+    --ring: 243 75% 60%;
   }
 }
 
@@ -62,59 +80,85 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground antialiased selection:bg-brand-500/15 selection:text-brand-900 dark:selection:text-brand-100;
+    @apply bg-background text-foreground antialiased selection:bg-primary/5 selection:text-primary/30 dark:selection:text-primary/20;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01", "ss02", "calt" 1;
-    letter-spacing: -0.011em;
+    letter-spacing: -0.01em;
   }
-  
+
   h1, h2, h3, h4, h5, h6 {
     letter-spacing: -0.025em;
   }
+
+  /* Enhanced refined scrollbars */
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(240 5% 82%);
+    border-radius: 9999px;
+  }
+  .dark ::-webkit-scrollbar-thumb {
+    background: hsl(240 4% 25%);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(240 5% 65%);
+  }
+
+  /* Enhanced glassmorphic accents */
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .dark .glass-panel {
+    background: rgba(15, 15, 18, 0.8);
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+
+  /* Luxury gradient text - refined indigo-violet */
+  .luxury-gradient-text {
+    background: linear-gradient(135deg, #18181b 0%, #2d2d34 60%, #4f46e5 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .dark .luxury-gradient-text {
+    background: linear-gradient(135deg, #f8f8f8 0%, #e4e4e7 60%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Subtle mesh background - very low opacity for depth */
+  .subtle-mesh-bg {
+    background-image: radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.03) 0px, transparent 50%),
+                      radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.02) 0px, transparent 50%),
+                      radial-gradient(at 50% 100%, rgba(34, 197, 94, 0.02) 0px, transparent 50%);
+  }
+
+  /* Focus-visible improvements */
+  input:focus-visible,
+  button:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: none;
+  }
 }
 
-/* Custom Refined Scrollbars */
-::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: hsl(240 5% 82%);
-  border-radius: 9999px;
-}
-.dark ::-webkit-scrollbar-thumb {
-  background: hsl(240 4% 25%);
-}
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(240 5% 65%);
+/* Custom focus ring using CSS variable */
+.focus-ring {
+  outline: none;
+  @apply focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
 }
 
-/* Glassmorphic Ambient Highlights */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+/* Smooth transition for interactive elements */
+.transition-subtle {
+  @apply transition-all duration-150 ease-out;
 }
-.dark .glass-panel {
-  background: rgba(15, 15, 18, 0.82);
-}
-
-.luxury-gradient-text {
-  background: linear-gradient(135deg, #18181b 0%, #3f3f46 60%, #4f46e5 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.dark .luxury-gradient-text {
-  background: linear-gradient(135deg, #ffffff 0%, #d4d4d8 60%, #818cf8 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.subtle-mesh-bg {
-  background-image: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
-                    radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.04) 0px, transparent 50%),
-                    radial-gradient(at 50% 100%, rgba(20, 184, 166, 0.03) 0px, transparent 50%);
+.transition-fast {
+  @apply transition-property-color, transition-property-background, transition-property-border-color, transition-property-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
