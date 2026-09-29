@@ -21,11 +21,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY app /app/app
 
+# Create uploads directory with proper ownership for non-root user (must run as root before USER switch)
+# This MUST run as root before switching to the non-root user below
+RUN mkdir -p /app/uploads && chown resumeforge:resumeforge /app/uploads
+
 # Switch to non-root user
 USER resumeforge
-
-# Create uploads directory with proper ownership for non-root user
-RUN mkdir -p /app/uploads && chown resumeforge:resumeforge /app/uploads
 
 # Expose the port the app runs on
 EXPOSE 8000
