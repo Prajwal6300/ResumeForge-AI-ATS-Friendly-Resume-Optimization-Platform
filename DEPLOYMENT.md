@@ -293,3 +293,5 @@ sudo systemctl status resumeforge-api
 - [x] **Private Storage:** Uploaded resumes and generated documents are stored in private directories with authenticated access control.
 - [x] **AI Anti-Fabrication:** Strict system prompt directives prevent fabrication of candidate metrics, dates, credentials, or skills.
 - [x] **Prompt Injection Defense:** Untrusted resume and JD text are encapsulated in `<untrusted_user_input>` delimiters.
+
+                   
