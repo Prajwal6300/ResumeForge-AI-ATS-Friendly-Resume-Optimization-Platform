@@ -214,7 +214,7 @@ npm run build
 - **Strict Origin CORS**: FastAPI allows only the configured production frontend origin.
 - **Role & Ownership Isolation (IDOR Defense)**: Every resource query joins on the authenticated user's ID.
 - **Path-Traversal Free Storage**: Local storage drivers enforce strict canonical base path checks.
-- **SQLAlchemy Parameterized Queries**: Eliminates SQL injection vulnerabilities.
+- **SQLAlchemy Parameterized Queries**: Eliminates SQL injection vulnerabilities.                                                              
 - **Untrusted Input Isolation**: Resume and Job Description inputs are wrapped in boundary tags to prevent prompt injection.
 
 ---
